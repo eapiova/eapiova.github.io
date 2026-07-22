@@ -1,0 +1,262 @@
+:root {
+  color-scheme: light;
+  --background: #fdfcf9;
+  --text: #20201e;
+  --muted: #5f5d57;
+  --rule: #d8d5cc;
+  --link: #15566a;
+  --visited: #65476f;
+  --focus: #9a4b00;
+  --measure: 72ch;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--background);
+  color: var(--text);
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 100%;
+  line-height: 1.65;
+}
+
+body {
+  margin: 0 auto;
+  max-width: calc(var(--measure) + 3rem);
+  min-height: 100vh;
+  padding: 0 1.5rem;
+}
+
+a {
+  color: var(--link);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.16em;
+}
+
+a:visited {
+  color: var(--visited);
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+:focus-visible {
+  border-radius: 0.1rem;
+  outline: 0.2rem solid var(--focus);
+  outline-offset: 0.2rem;
+}
+
+.skip-link {
+  background: var(--text);
+  color: var(--background);
+  left: 1rem;
+  padding: 0.5rem 0.75rem;
+  position: absolute;
+  top: -5rem;
+  z-index: 1;
+}
+
+.skip-link:focus {
+  color: var(--background);
+  top: 1rem;
+}
+
+.site-header {
+  border-bottom: 1px solid var(--rule);
+  padding: 1.25rem 0 1rem;
+}
+
+.site-name,
+nav,
+.site-footer,
+.subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+}
+
+.site-name {
+  color: var(--text);
+  font-size: 1.1rem;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.site-name:visited {
+  color: var(--text);
+}
+
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  list-style: none;
+  margin: 0.65rem 0 0;
+  padding: 0;
+}
+
+nav a {
+  font-size: 0.9rem;
+}
+
+nav a:link,
+nav a:visited {
+  color: var(--link);
+}
+
+nav li + li {
+  margin-top: 0;
+}
+
+main {
+  padding: 2.5rem 0 3.5rem;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2rem, 7vw, 2.75rem);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+h2 {
+  border-bottom: 1px solid var(--rule);
+  font-size: 1.45rem;
+  font-weight: 600;
+  margin: 2.8rem 0 0.8rem;
+  padding-bottom: 0.25rem;
+}
+
+h3 {
+  font-size: 1.08rem;
+  margin: 2rem 0 0.35rem;
+}
+
+p,
+ul,
+ol,
+dl,
+blockquote {
+  margin-block: 0.8rem;
+}
+
+li + li {
+  margin-top: 0.35rem;
+}
+
+dt {
+  font-weight: 700;
+}
+
+dd {
+  margin: 0 0 0.65rem 1.5rem;
+}
+
+blockquote {
+  border-left: 0.2rem solid var(--rule);
+  color: var(--muted);
+  font-style: italic;
+  margin-left: 0;
+  padding-left: 1rem;
+}
+
+code,
+pre {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+  font-size: 0.9em;
+}
+
+pre {
+  border: 1px solid var(--rule);
+  overflow-x: auto;
+  padding: 0.8rem;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.subtitle {
+  color: var(--muted);
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  margin-top: 0.3rem;
+}
+
+#refs {
+  margin-top: 1.5rem;
+}
+
+.csl-entry {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  column-gap: 0.65rem;
+  margin-bottom: 1.1rem;
+}
+
+.csl-left-margin {
+  padding: 0;
+}
+
+.csl-right-inline {
+  margin-left: 0;
+  min-width: 0;
+}
+
+.site-footer {
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 1rem 0 2.5rem;
+}
+
+@media (max-width: 36rem) {
+  body {
+    padding-inline: 1rem;
+  }
+
+  main {
+    padding-top: 2rem;
+  }
+
+  nav ul {
+    column-gap: 0.8rem;
+  }
+}
+
+@media print {
+  :root {
+    --background: #fff;
+    --text: #000;
+  }
+
+  body {
+    max-width: none;
+    padding: 0;
+  }
+
+  .skip-link,
+  .site-header nav,
+  .site-footer {
+    display: none;
+  }
+
+  main {
+    padding-top: 1.5rem;
+  }
+
+  a,
+  a:visited {
+    color: inherit;
+  }
+}

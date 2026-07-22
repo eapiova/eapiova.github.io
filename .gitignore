@@ -1,0 +1,8 @@
+/public/
+/result
+/result-*
+
+# Private planning/handoff documents - never publish
+/academic-site.md
+/codex.md
+
