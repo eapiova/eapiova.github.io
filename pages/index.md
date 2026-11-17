@@ -18,6 +18,9 @@ I work on formalized proof theory for modal logic, constructive and computable r
 
 ## Recent
 
+- I will speak at Trends in Logic XXVI in Sendai on 26 November 2026 on strong inequality in observational type theory.
+- I spoke at TPP 2026 in Tokyo in November 2026 on making injectivity compute in Cubical Agda.
+- I spoke at the Proof and Computation 2026 autumn school in Fischbachau in September 2026 on strong inequality in observational type theory.
 - The paper **"Glivenko's theorem underneath structure"** appeared in the CiE 2026 proceedings (Springer LNCS 16674, pages 162-177).
 - I spoke at SSTT 2026 in Ljubljana in June 2026 on canonical normal forms for regular categories.
 - I spoke at PACMAN 2026 in Verona in June 2026 on computing with constructive reals.

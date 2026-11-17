@@ -5,6 +5,18 @@ description: Talks and presentation materials by Riccardo Borsetto.
 
 ## 2026
 
+### Strong inequality in observational type theory
+
+Trends in Logic XXVI, Tohoku University, Sendai, Japan, 26 November 2026 (upcoming; conference 23-27 November 2026). Based on an idea by Iosif Petrakis.
+
+### Making injectivity compute in Cubical Agda
+
+TPP 2026, the 22nd Theorem Proving and Provers Meeting, RIKEN AIP, Tokyo, Japan, 17 November 2026.
+
+### Strong Inequality in Observational Type Theory
+
+Proof and Computation 2026 autumn school, Fischbachau, Germany, 18 September 2026. Based on an idea by Iosif Petrakis.
+
 ### A canonical normal form theorem for the type theory of regular categories
 
 SSTT 2026, Ljubljana, Slovenia, co-located with MFPS 2026, 4-5 June 2026. [Slides](files/slides/sstt-2026.pdf).

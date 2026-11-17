@@ -28,6 +28,8 @@ description: Curriculum vitae of Riccardo Borsetto.
 
 ## Schools and meetings
 
+- TPP 2026
+- "Proof and Computation" Autumn School 2026
 - Dagstuhl Seminar 26121
 - TYPES 2026
 - CSL 2026
