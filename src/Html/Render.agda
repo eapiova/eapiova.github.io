@@ -18,7 +18,7 @@ open import Function.Base using (_∘_)
 
 open import Html
 open import Html.Escape using (escape; entities)
-open import Site.Ids
+open import Site.Ids hiding (plain; agda; root)
 open import Site.Util using (_∈ˢ_; filterᵇ)
 
 infixr 5 _+_
@@ -30,32 +30,6 @@ _+_ = S._++_
 
 refAnchor : PubId → String
 refAnchor i = "ref-" + pubKey i
-
-href : Target → String
-href (page p)  = path p
-href (ref i)   = path publications + "#" + refAnchor i
-href (asset x) = assetPath x
-href bibtex    = "bib/publications.bib"
-href (bibOf i) = "bib/" + pubKey i + ".bib"
-href (ext u)   = u
-href (mail m)  = "mailto:" + m
-
-------------------------------------------------------------------------
--- Phrasing content
-
-mutual
-  inline : ∀ {m} → Inline m → String
-  inline (text s)           = escape s
-  inline (em xs)            = "<em>" + inlines xs + "</em>"
-  inline (strong xs)        = "<strong>" + inlines xs + "</strong>"
-  inline (code s)           = "<code>" + escape s + "</code>"
-  inline br                 = "<br>\n"
-  inline (link (mail m) xs) = "<a href=\"" + entities ("mailto:" + m) + "\" class=\"email\">" + inlines xs + "</a>"
-  inline (link x xs)        = "<a href=\"" + escape (href x) + "\">" + inlines xs + "</a>"
-
-  inlines : ∀ {m} → List (Inline m) → String
-  inlines []       = ""
-  inlines (x ∷ xs) = inline x + inlines xs
 
 -- The text a reader sees, without markup.
 mutual
@@ -127,69 +101,100 @@ anchors : List Block → List String
 anchors bs = "content" ∷ dedupe (headingSlugs bs) ++ citeAnchors bs
 
 ------------------------------------------------------------------------
--- Flow content, one line per element
+-- Links and markup.  `root` leads from the page being rendered back to
+-- the site root (empty, or ../ for pages under agda/); page links are
+-- relative and need none.
 
-private
-  heading : String → List String → Inlines → String
-  heading h []      xs = "<" + h + ">" + inlines xs + "</" + h + ">"
-  heading h (i ∷ _) xs = "<" + h + " id=\"" + escape i + "\">" + inlines xs + "</" + h + ">"
+module _ (root : String) where
 
-  rest : List String → List String
-  rest []       = []
-  rest (_ ∷ is) = is
+  href : Target → String
+  href (page p)  = path p
+  href (ref i)   = path publications + "#" + refAnchor i
+  href (asset x) = root + assetPath x
+  href bibtex    = root + "bib/publications.bib"
+  href (bibOf i) = root + "bib/" + pubKey i + ".bib"
+  href (ext u)   = u
+  href (mail m)  = "mailto:" + m
 
-  item : Inlines → String
-  item xs = "<li>" + inlines xs + "</li>"
+  mutual
+    inline : ∀ {m} → Inline m → String
+    inline (text s)           = escape s
+    inline (em xs)            = "<em>" + inlines xs + "</em>"
+    inline (strong xs)        = "<strong>" + inlines xs + "</strong>"
+    inline (code s)           = "<code>" + escape s + "</code>"
+    inline br                 = "<br>\n"
+    inline (link (mail m) xs) = "<a href=\"" + entities ("mailto:" + m) + "\" class=\"email\">" + inlines xs + "</a>"
+    inline (link x xs)        = "<a href=\"" + escape (href x) + "\">" + inlines xs + "</a>"
 
-  margin : Margin → String
-  margin (stamp i s) = "<time class=\"when\" datetime=\"" + escape i + "\">" + escape s + "</time>"
-  margin (tag s)     = "<span class=\"when\">" + escape s + "</span>"
-  margin blank       = "<span class=\"when\"></span>"
+    inlines : ∀ {m} → List (Inline m) → String
+    inlines []       = ""
+    inlines (x ∷ xs) = inline x + inlines xs
 
-  maybe′ : ∀ {A B : Set} → (A → B) → B → Maybe A → B
-  maybe′ f z (just x) = f x
-  maybe′ f z nothing  = z
 
-  linksLine : List Inlines → List String
-  linksLine [] = []
-  linksLine ls = ("    <ul class=\"links\">" + S.concat (map item ls) + "</ul>") ∷ []
+  ------------------------------------------------------------------------
+  -- Flow content, one line per element
 
-  -- Renders entries, consuming one identifier per heading.
-  entryLines : List String → List Entry → List String × List String
-  entryLines ids [] = [] , ids
-  entryLines ids (entry m anc hd body ls ∷ es) =
-    (open′ ∷ ("  " + margin m) ∷ "  <div class=\"what\">" ∷ head′
-      ++ ("    <p>" + inlines body + "</p>") ∷ links′ ++ "  </div>" ∷ "</li>" ∷ proj₁ more)
-    , proj₂ more
-    where
-    open′ = "<li class=\"entry\"" + idAttr anc + ">"
+  private
+    heading : String → List String → Inlines → String
+    heading h []      xs = "<" + h + ">" + inlines xs + "</" + h + ">"
+    heading h (i ∷ _) xs = "<" + h + " id=\"" + escape i + "\">" + inlines xs + "</" + h + ">"
+
+    rest : List String → List String
+    rest []       = []
+    rest (_ ∷ is) = is
+
+    item : Inlines → String
+    item xs = "<li>" + inlines xs + "</li>"
+
+    margin : Margin → String
+    margin (stamp i s) = "<time class=\"when\" datetime=\"" + escape i + "\">" + escape s + "</time>"
+    margin (tag s)     = "<span class=\"when\">" + escape s + "</span>"
+    margin blank       = "<span class=\"when\"></span>"
+
+    maybe′ : ∀ {A B : Set} → (A → B) → B → Maybe A → B
+    maybe′ f z (just x) = f x
+    maybe′ f z nothing  = z
+
+    linksLine : List Inlines → List String
+    linksLine [] = []
+    linksLine ls = ("    <ul class=\"links\">" + S.concat (map item ls) + "</ul>") ∷ []
+
+    -- Renders entries, consuming one identifier per heading.
+    entryLines : List String → List Entry → List String × List String
+    entryLines ids [] = [] , ids
+    entryLines ids (entry m anc hd body ls ∷ es) =
+      (open′ ∷ ("  " + margin m) ∷ "  <div class=\"what\">" ∷ head′
+        ++ ("    <p>" + inlines body + "</p>") ∷ links′ ++ "  </div>" ∷ "</li>" ∷ proj₁ more)
+      , proj₂ more
       where
-      idAttr : Maybe PubId → String
-      idAttr (just i) = " id=\"" + refAnchor i + "\""
-      idAttr nothing  = ""
-    head′ : List String
-    head′ = maybe′ (λ h → ("    " + heading "h3" ids h) ∷ []) [] hd
-    ids′ : List String
-    ids′ = maybe′ (λ _ → rest ids) ids hd
-    links′ : List String
-    links′ = linksLine ls
-    more = entryLines ids′ es
+      open′ = "<li class=\"entry\"" + idAttr anc + ">"
+        where
+        idAttr : Maybe PubId → String
+        idAttr (just i) = " id=\"" + refAnchor i + "\""
+        idAttr nothing  = ""
+      head′ : List String
+      head′ = maybe′ (λ h → ("    " + heading "h3" ids h) ∷ []) [] hd
+      ids′ : List String
+      ids′ = maybe′ (λ _ → rest ids) ids hd
+      links′ : List String
+      links′ = linksLine ls
+      more = entryLines ids′ es
 
-  blocks : List String → List Block → List String
-  blocks ids []             = []
-  blocks ids (para xs ∷ bs) = ("<p>" + inlines xs + "</p>") ∷ blocks ids bs
-  blocks ids (h2 xs ∷ bs)   = heading "h2" ids xs ∷ blocks (rest ids) bs
-  blocks ids (h3 xs ∷ bs)   = heading "h3" ids xs ∷ blocks (rest ids) bs
-  blocks ids (ul xs ∷ bs)   = "<ul>" ∷ map item xs ++ "</ul>" ∷ blocks ids bs
-  blocks ids (inlineList xs ∷ bs) =
-    ("<ul class=\"inline\">" + S.concat (map item xs) + "</ul>") ∷ blocks ids bs
-  blocks ids (entries es ∷ bs) =
-    "<ol class=\"entries\">" ∷ proj₁ r ++ "</ol>" ∷ blocks (proj₂ r) bs
-    where r = entryLines ids es
-  blocks ids (timeline xs ∷ bs) =
-    "<ol class=\"entries timeline\">"
-    ∷ map (λ (m , x) → "<li class=\"entry\">" + margin m + "<div class=\"what\">" + inlines x + "</div></li>") xs
-    ++ "</ol>" ∷ blocks ids bs
+    blocks : List String → List Block → List String
+    blocks ids []             = []
+    blocks ids (para xs ∷ bs) = ("<p>" + inlines xs + "</p>") ∷ blocks ids bs
+    blocks ids (h2 xs ∷ bs)   = heading "h2" ids xs ∷ blocks (rest ids) bs
+    blocks ids (h3 xs ∷ bs)   = heading "h3" ids xs ∷ blocks (rest ids) bs
+    blocks ids (ul xs ∷ bs)   = "<ul>" ∷ map item xs ++ "</ul>" ∷ blocks ids bs
+    blocks ids (inlineList xs ∷ bs) =
+      ("<ul class=\"inline\">" + S.concat (map item xs) + "</ul>") ∷ blocks ids bs
+    blocks ids (entries es ∷ bs) =
+      "<ol class=\"entries\">" ∷ proj₁ r ++ "</ol>" ∷ blocks (proj₂ r) bs
+      where r = entryLines ids es
+    blocks ids (timeline xs ∷ bs) =
+      "<ol class=\"entries timeline\">"
+      ∷ map (λ (m , x) → "<li class=\"entry\">" + margin m + "<div class=\"what\">" + inlines x + "</div></li>") xs
+      ++ "</ol>" ∷ blocks ids bs
 
-render : List Block → List String
-render bs = blocks (dedupe (headingSlugs bs)) bs
+  render : List Block → List String
+  render bs = blocks (dedupe (headingSlugs bs)) bs

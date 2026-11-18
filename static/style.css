@@ -1,5 +1,5 @@
 /*
-  One serif (Libertinus Serif, OFL), one mono for code (JuliaMono, OFL),
+  One serif (Libertinus Serif, OFL), one mono for code (SiteMono, a subset of JuliaMono, OFL),
   both served from fonts/.  Blue-black ink on cool white.  Dates and
   citation labels hang in a left margin; the home page title is set as an
   inference rule.  No scripts, no motion.  The HTML reads fine without this.
@@ -27,8 +27,8 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "JuliaMono";
-  src: url("fonts/JuliaMono-RegularLatin.woff2") format("woff2");
+  font-family: "SiteMono";
+  src: url("fonts/SiteMono-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -90,7 +90,7 @@ a:hover { text-decoration-thickness: 0.12em; }
 }
 
 code {
-  font-family: JuliaMono, ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-family: SiteMono, ui-monospace, "SFMono-Regular", Consolas, monospace;
   font-size: 0.78em;
 }
 
@@ -250,6 +250,10 @@ ul.links li + li,
 ul.inline li + li { margin-top: 0; }
 
 /* Footer ------------------------------------------------------------------ */
+
+.site-footer p { margin: 0.4rem 0; }
+.switch a,
+.switch a:visited { color: var(--muted); }
 
 .site-footer {
   padding: 1rem 0 3rem;

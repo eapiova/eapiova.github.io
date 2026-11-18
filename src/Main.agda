@@ -11,6 +11,7 @@ open import Data.Char.Base using (_≈ᵇ_)
 open import Data.List.Base using (List; []; _∷_; length)
 open import Data.Maybe.Base using (Maybe; just; nothing) renaming (_>>=_ to _>>=ᴹ_)
 open import Data.Nat.Base using (ℕ)
+open import Data.Product.Base using (_,_)
 open import Data.Nat.Show using (show; readMaybe)
 open import Data.String.Base using (String; _++_; wordsByᵇ)
 open import Data.Unit.Polymorphic.Base using (⊤)
@@ -59,10 +60,11 @@ build : Date → IO ⊤
 build today = do
   List.mapM′ checkAsset allAssets
   createDirectoryIfMissing true (mkFilePath "public/bib")
-  List.mapM′ (λ p → writeFile ("public/" ++ path p) (document today p)) allPages
+  createDirectoryIfMissing true (mkFilePath "public/agda")
+  List.mapM′ (λ (d , p) → writeFile ("public/" ++ outPath d p) (document d today p)) outputs
   writeFile "public/bib/publications.bib" bibFile
   List.mapM′ (λ i → writeFile ("public/bib/" ++ pubKey i ++ ".bib") (bibFileOf i)) allPubIds
-  putStrLn ("Built " ++ show (length allPages) ++ " pages for " ++ showDate today ++ ".")
+  putStrLn ("Built " ++ show (length outputs) ++ " pages for " ++ showDate today ++ ".")
 
 main : Main
 main = run do

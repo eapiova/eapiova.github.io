@@ -1,0 +1,238 @@
+/*
+  The Agda design (pages under agda/): the site shown as the module it is.
+  A sidebar names the module and lists its pages; each page shows the
+  signature of the definition it is generated from; links use the colours
+  of Agda's HTML backend.  Same content as the plain design.
+*/
+
+@font-face {
+  font-family: "Libertinus Serif";
+  src: url("fonts/LibertinusSerif-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libertinus Serif";
+  src: url("fonts/LibertinusSerif-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Libertinus Serif";
+  src: url("fonts/LibertinusSerif-Semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "SiteMono";
+  src: url("fonts/SiteMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+  --paper: #f5f6f8;
+  --sheet: #ffffff;
+  --ink: #1a1d24;
+  --muted: #5d6370;
+  --hair: #dfe2e8;
+  /* Agda's HTML highlighting */
+  --agda-function: #0000cd;
+  --agda-keyword: #cd6600;
+  --agda-constructor: #008b00;
+  --agda-comment: #b22222;
+  --visited: #6a3d9a;
+  --focus: #cd6600;
+  --mono: SiteMono, ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #12141a;
+    --sheet: #1b1e26;
+    --ink: #e2e5ec;
+    --muted: #9ba2b2;
+    --hair: #2f3442;
+    --agda-function: #8ab4ff;
+    --agda-keyword: #f0a35e;
+    --agda-constructor: #7fd88f;
+    --agda-comment: #ff8f8f;
+    --visited: #c6a8ee;
+    --focus: #f0a35e;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 400 1.2rem/1.55 "Libertinus Serif", Georgia, serif;
+  font-kerning: normal;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 40rem);
+  gap: 0 3rem;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+a { color: var(--agda-function); text-decoration-thickness: 0.06em; text-underline-offset: 0.16em; }
+a:visited { color: var(--visited); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+code,
+.site-name,
+nav,
+.when,
+.signature,
+.switch { font-family: var(--mono); }
+code { font-size: 0.78em; }
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--ink);
+  color: var(--paper);
+}
+.skip-link:focus { top: 1rem; color: var(--paper); }
+
+/* Sidebar: the module and its pages -------------------------------------- */
+
+.site-header {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  padding: 3rem 0 2rem;
+}
+
+.site-name,
+.site-name:visited {
+  display: block;
+  margin-bottom: 1.25rem;
+  color: var(--agda-function);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.site-name::before { content: "module "; color: var(--agda-keyword); }
+.site-name::after { content: " where"; color: var(--agda-keyword); }
+
+nav ul { margin: 0; padding: 0; list-style: none; font-size: 0.82rem; line-height: 2; }
+nav li + li { margin-top: 0; }
+nav a,
+nav a:visited { color: var(--ink); text-decoration: none; }
+nav a:hover { color: var(--agda-function); text-decoration: underline; }
+nav a[aria-current] { color: var(--agda-function); }
+nav a[aria-current]::before { content: "▸ "; }
+
+/* The page as a sheet ----------------------------------------------------- */
+
+main {
+  grid-column: 2;
+  margin: 2rem 0 1rem;
+  padding: 3rem 3rem 3.5rem;
+  background: var(--sheet);
+  border: 1px solid var(--hair);
+}
+
+h1, h2, h3 { text-wrap: balance; }
+h1 { margin: 0; font-weight: 400; font-size: 2.4rem; line-height: 1.1; }
+h2 { margin: 2.75rem 0 1rem; font-weight: 600; font-size: 1.25rem; line-height: 1.3; }
+h3 { margin: 2rem 0 0.4rem; font-weight: 600; font-size: 1.1rem; line-height: 1.35; }
+p { margin: 0.7rem 0; hyphens: auto; }
+ul, ol { margin: 0.7rem 0; padding-left: 1.25rem; }
+li + li { margin-top: 0.3rem; }
+
+.page-header { margin-bottom: 0; }
+
+/* The type of the definition this page is generated from. */
+.signature {
+  margin: 0.6rem 0 2.25rem;
+  color: var(--agda-function);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+.signature code { font-size: inherit; }
+
+/* On the home page the inference rule is read as a judgement, flattened. */
+.judgement { display: flex; flex-direction: column; }
+.judgement h1 { order: 1; }
+.judgement .premises {
+  order: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-style: italic;
+  color: var(--muted);
+}
+.judgement .premises li + li { margin-top: 0; }
+.judgement .rule-label { order: 3; margin: 0.1rem 0 0; color: var(--muted); }
+
+/* Entries: the date or label as a constructor-coloured stamp above. */
+ol.entries { margin: 0; padding: 0; list-style: none; }
+.entry { margin: 0 0 1.4rem; }
+.timeline .entry { margin-bottom: 0.9rem; }
+.entry .when {
+  display: block;
+  margin-bottom: 0.1rem;
+  color: var(--agda-constructor);
+  font-size: 0.75rem;
+}
+.entry h3 { margin: 0; }
+.entry p { margin: 0.2rem 0 0; }
+
+ul.links,
+ul.inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1rem;
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+ul.links { font-size: 0.95rem; }
+ul.links li + li,
+ul.inline li + li { margin-top: 0; }
+
+/* Footer, including the way back -------------------------------------------- */
+
+.site-footer {
+  grid-column: 2;
+  padding: 0 0 3rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.site-footer p { margin: 0.4rem 0; }
+.switch { font-size: 0.8rem; }
+.switch a::before { content: "-- "; color: var(--agda-comment); }
+
+@media (max-width: 56rem) {
+  body { display: block; padding: 0 1rem; }
+  .site-header { position: static; padding: 1.5rem 0 0; }
+  nav ul { display: flex; flex-wrap: wrap; gap: 0 1rem; }
+  main { margin: 1rem 0; padding: 1.75rem 1.25rem 2.5rem; }
+}
+
+@media print {
+  html { font-size: 11pt; }
+  body { display: block; max-width: none; padding: 0; }
+  .skip-link, .site-header nav, .site-footer { display: none; }
+  main { border: 0; padding: 0; margin: 0; }
+  a, a:visited { color: inherit; }
+}

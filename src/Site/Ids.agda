@@ -10,7 +10,8 @@ module Site.Ids where
 open import Data.Bool.Base using (if_then_else_)
 open import Data.List.Base using (List; []; _∷_)
 open import Data.Maybe.Base using (Maybe; just; nothing)
-open import Data.String.Base using (String)
+open import Data.String.Base using (String; _++_)
+open import Data.Product.Base using (_×_; _,_)
 
 open import Site.Util using (_==_)
 
@@ -107,11 +108,13 @@ pubKey jlc      = "borsetto-zorzi-s4dot2-jlc"
 
 data Asset : Set where
   cvPdf sstt26 pacman26 dagstuhl26 overlay25 ictcs25 : Asset
-  serifRegular serifItalic serifSemibold mono : Asset   -- referenced by style.css
+  serifRegular serifItalic serifSemibold mono : Asset   -- referenced by the stylesheets
+  plainStyle agdaStyle : Asset
 
 allAssets : List Asset
 allAssets = cvPdf ∷ sstt26 ∷ pacman26 ∷ dagstuhl26 ∷ overlay25 ∷ ictcs25
-          ∷ serifRegular ∷ serifItalic ∷ serifSemibold ∷ mono ∷ []
+          ∷ serifRegular ∷ serifItalic ∷ serifSemibold ∷ mono
+          ∷ plainStyle ∷ agdaStyle ∷ []
 
 assetPath : Asset → String
 assetPath cvPdf      = "files/cv.pdf"
@@ -123,7 +126,54 @@ assetPath ictcs25    = "files/slides/ictcs-2025.pdf"
 assetPath serifRegular  = "fonts/LibertinusSerif-Regular.woff2"
 assetPath serifItalic   = "fonts/LibertinusSerif-Italic.woff2"
 assetPath serifSemibold = "fonts/LibertinusSerif-Semibold.woff2"
-assetPath mono          = "fonts/JuliaMono-RegularLatin.woff2"
+assetPath mono          = "fonts/SiteMono-Regular.woff2"
+assetPath plainStyle    = "style.css"
+assetPath agdaStyle     = "agda.css"
+
+------------------------------------------------------------------------
+-- Designs: every page is rendered twice, plainly at the root and as an
+-- Agda module under agda/.  Page links are relative, so navigation stays
+-- within a design; files are reached through `root`.
+
+data Design : Set where
+  plain agda : Design
+
+allDesigns : List Design
+allDesigns = plain ∷ agda ∷ []
+
+other : Design → Design
+other plain = agda
+other agda  = plain
+
+outPath : Design → Page → String
+outPath plain p = path p
+outPath agda  p = "agda/" ++ path p
+
+root : Design → String
+root plain = ""
+root agda  = "../"
+
+-- Every output file, and a left inverse of `outPath`.
+outputs : List (Design × Page)
+outputs = go allDesigns
+  where
+  pagesOf : Design → List Page → List (Design × Page)
+  pagesOf d []       = []
+  pagesOf d (p ∷ ps) = (d , p) ∷ pagesOf d ps
+  go : List Design → List (Design × Page)
+  go []       = []
+  go (d ∷ ds) = pagesOf d allPages ++′ go ds
+    where
+    _++′_ : List (Design × Page) → List (Design × Page) → List (Design × Page)
+    []       ++′ ys = ys
+    (x ∷ xs) ++′ ys = x ∷ (xs ++′ ys)
+
+fromOutPath : String → Maybe (Design × Page)
+fromOutPath s = search outputs
+  where
+  search : List (Design × Page) → Maybe (Design × Page)
+  search []             = nothing
+  search ((d , p) ∷ xs) = if s == outPath d p then just (d , p) else search xs
 
 ------------------------------------------------------------------------
 -- Link targets

@@ -15,6 +15,7 @@ open import Data.Nat.Base using (_≥_)
 open import Data.Nat.Properties using (_≥?_)
 open import Data.String.Properties using (_≟_)
 open import Data.Sum.Base using (_⊎_; inj₁; inj₂)
+open import Data.Product.Base using (_,_)
 open import Data.List.Membership.DecPropositional _≟_ using (_∈?_)
 open import Data.List.Relation.Unary.Unique.DecPropositional _≟_ using (Unique; unique?)
 open import Function.Base using (_∘_)
@@ -74,6 +75,38 @@ path-injective {p} {q} e =
   just-injective (trans (sym (fromPath-path p)) (trans (cong fromPath e) (fromPath-path q)))
 
 ------------------------------------------------------------------------
+-- The two designs never write to the same file, and the design switch
+-- is an involution: switching twice returns to the page you started on.
+
+fromOutPath-outPath : ∀ d p → fromOutPath (outPath d p) ≡ just (d , p)
+fromOutPath-outPath plain home         = refl
+fromOutPath-outPath plain research     = refl
+fromOutPath-outPath plain publications = refl
+fromOutPath-outPath plain notes        = refl
+fromOutPath-outPath plain talks        = refl
+fromOutPath-outPath plain teaching     = refl
+fromOutPath-outPath plain software     = refl
+fromOutPath-outPath plain cv           = refl
+fromOutPath-outPath plain contact      = refl
+fromOutPath-outPath agda  home         = refl
+fromOutPath-outPath agda  research     = refl
+fromOutPath-outPath agda  publications = refl
+fromOutPath-outPath agda  notes        = refl
+fromOutPath-outPath agda  talks        = refl
+fromOutPath-outPath agda  teaching     = refl
+fromOutPath-outPath agda  software     = refl
+fromOutPath-outPath agda  cv           = refl
+fromOutPath-outPath agda  contact      = refl
+
+outPath-injective : ∀ {d e p q} → outPath d p ≡ outPath e q → (d , p) ≡ (e , q)
+outPath-injective {d} {e} {p} {q} eq =
+  just-injective (trans (sym (fromOutPath-outPath d p)) (trans (cong fromOutPath eq) (fromOutPath-outPath e q)))
+
+switch-involutive : ∀ d → other (other d) ≡ d
+switch-involutive plain = refl
+switch-involutive agda  = refl
+
+------------------------------------------------------------------------
 -- Every citation link resolves, on every build date: the publications
 -- page defines the anchor of each publication.
 
@@ -111,16 +144,18 @@ talks-newest-first = from-yes (linked? _≥?_ (map (ordinal ∘ start ∘ Talk.w
 -- Every static file is checked for existence by the build.
 
 assets-complete : ∀ x → x ∈ allAssets
-assets-complete cvPdf      = here refl
-assets-complete sstt26     = there (here refl)
-assets-complete pacman26   = there (there (here refl))
-assets-complete dagstuhl26 = there (there (there (here refl)))
-assets-complete overlay25  = there (there (there (there (here refl))))
-assets-complete ictcs25    = there (there (there (there (there (here refl)))))
+assets-complete cvPdf         = here refl
+assets-complete sstt26        = there (here refl)
+assets-complete pacman26      = there (there (here refl))
+assets-complete dagstuhl26    = there (there (there (here refl)))
+assets-complete overlay25     = there (there (there (there (here refl))))
+assets-complete ictcs25       = there (there (there (there (there (here refl)))))
 assets-complete serifRegular  = there (there (there (there (there (there (here refl))))))
 assets-complete serifItalic   = there (there (there (there (there (there (there (here refl)))))))
 assets-complete serifSemibold = there (there (there (there (there (there (there (there (here refl))))))))
 assets-complete mono          = there (there (there (there (there (there (there (there (there (here refl)))))))))
+assets-complete plainStyle    = there (there (there (there (there (there (there (there (there (there (here refl))))))))))
+assets-complete agdaStyle     = there (there (there (there (there (there (there (there (there (there (there (here refl)))))))))))
 
 ------------------------------------------------------------------------
 -- Escaped text cannot open a tag or end an attribute.

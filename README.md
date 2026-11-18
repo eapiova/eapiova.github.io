@@ -35,6 +35,8 @@ from the build date to the HTML of each page. Talks, publications, and projects 
 
 One self-hosted serif, Libertinus Serif, and JuliaMono for code, both under the SIL Open Font License (texts in `static/fonts/`). Blue-black ink on cool white, with a dark scheme that follows the reader's system setting. Dates and citation labels hang in a left margin column (`entries` and `timeline` blocks with a `Margin`); on narrow screens they fold above each entry. The home page title is set as an inference rule: research areas as premises, the name as conclusion, the affiliation as the rule's label (`premises` and `ruleLabel` in `src/Content/Prose.agda`). No scripts, no motion; the HTML reads fine without the stylesheet.
 
+Every page also exists in a second design, under `agda/`: the site shown as the Agda module it is, with a sidebar, Agda's highlighting colours, and under each title the signature of the definition the page is generated from (`allTalks : List Talk`). Signatures are produced by a reflection macro (`src/Site/Signature.agda`), so they are the definitions' actual types. A footer link switches between the two versions of the same page. The design is an input of the site, `document : Design → Date → Page → String`, and page content does not depend on it. Both versions name the plain page as canonical. The second stylesheet is `static/agda.css`; its monospace font, `SiteMono`, is a renamed subset of JuliaMono with Latin, Greek, arrows and mathematical operators.
+
 ## Build and preview
 
 With Nix (flakes enabled):
@@ -55,14 +57,16 @@ Compiling `Main` typechecks `Site.Properties`, so no site is built from content 
 
 | Theorem | Statement |
 |---|---|
-| `pages-complete` | every page is generated |
+| `pages-complete` | every page is generated (in both designs: `outputs`) |
 | `nav-complete` | every page except home is in the navigation |
 | `path-injective` | distinct pages are written to distinct files |
 | `citations-resolve` | for every build date, every citation link has its anchor on the publications page |
 | `labels-unique` | bibliography labels (BoZo25a, BoZo25b, …) are distinct |
 | `anchors-unique` | for every build date, no page defines an identifier twice |
 | `talks-newest-first` | the talk list is in reverse chronological order |
-| `assets-complete` | the build checks every static file it links to |
+| `outPath-injective` | no two (design, page) pairs are written to the same file |
+| `switch-involutive` | switching design twice returns to the design you started in |
+| `assets-complete` | the build checks every static file it links to, including stylesheets and fonts |
 | `text-inert` | escaped text contains no `<`, `>`, or `"` |
 
 By construction (no proof needed): internal links are values of `Target`, so a link to a non-existent page, publication, or file cannot be written; block content cannot appear inside phrasing content; links cannot nest; there is no raw-HTML constructor. At run time, `Main` refuses to build if a static file referenced by an `Asset` is missing.
