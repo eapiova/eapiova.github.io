@@ -1,60 +1,76 @@
 # Academic site
 
-A minimal, durable academic website for Riccardo Borsetto. It is built from Markdown and BibTeX with Pandoc, the American Mathematical Society label CSL style, one HTML template, one CSS file, GNU Make, and a pinned Nix environment. It produces ordinary static files and contains no JavaScript, external fonts, analytics, cookies, or third-party embeds.
+A minimal, durable academic website for Riccardo Borsetto, written as a total Agda program. The site is a function
+
+```agda
+document : Date → Page → String
+```
+
+from the build date to the HTML of each page. Talks, publications, and projects are values of record types; pages are values of a closed type `Page`; HTML is an inductive type whose typing rules enforce part of HTML's content model. The only effects (reading the date, checking static files, writing files) live in `src/Main.agda`. The output is ordinary static files with no JavaScript, external fonts, analytics, cookies, or third-party embeds.
 
 ## Repository map
 
 ```text
 .
-├── flake.nix
-├── flake.lock
-├── Makefile
-├── metadata.yaml
-├── template.html
-├── pages/
-├── bib/publications.bib
-├── csl/american-mathematical-society-label.csl
-├── static/style.css
-├── static/files/cv.pdf
-├── static/files/slides/
-└── public/                 # generated; do not commit by default
+├── flake.nix, flake.lock      pinned Agda + standard library + GHC
+├── Makefile                   compile, run, serve, deploy
+├── website.agda-lib
+├── src/
+│   ├── Main.agda              the IO shell
+│   ├── Html.agda              typed HTML: Inline (flow | inert), Block
+│   ├── Html/Escape.agda       escaping, with its safety proof
+│   ├── Html/Render.agda       rendering, Pandoc-style heading identifiers
+│   ├── Site/Ids.agda          Page, PubId, Asset, Target (closed universes)
+│   ├── Site/Date.agda         dates, written 26 nov 2026
+│   ├── Site/Types.agda        Person, Talk, Publication, Project, News
+│   ├── Site/Bibliography.agda labels, AMS-style entries, BibTeX file
+│   ├── Site/Pages.agda        page bodies and the document layout
+│   ├── Site/Properties.agda   theorems about the site
+│   └── Content/               the facts: talks, publications, software, prose
+├── static/                    style.css, cv.pdf, slides (copied verbatim)
+└── public/                    generated; not committed
 ```
 
 ## Build and preview
 
-With Nix installed and flakes enabled:
+With Nix (flakes enabled):
 
 ```sh
 nix develop
-make
-make serve
+make            # compile src/Main.agda, then run it for today's date
+make serve      # http://127.0.0.1:8000/  (PORT=9000 to change)
 ```
 
-Then open <http://127.0.0.1:8000/>. Set another port with `make serve PORT=9000`.
+Outside Nix you need Agda, the Agda standard library registered as `standard-library`, GHC, GNU Make, and Python 3 for `serve`. `make check` typechecks the theorems only. `make clean` removes `public/`; `make distclean` also removes the Agda/GHC build cache in `_build/`.
 
-Outside Nix, install Pandoc with citeproc support, GNU Make, and Python 3, then run the same `make` commands. `make clean` removes only the generated `public/` directory.
+The build date is an explicit input: `make TODAY=2026-12-01` builds the site as it will look on that day. `nix build` is hermetic and uses the commit date of the source as the build date; `result` then contains the deployable site.
 
-For a hermetic production build:
+## What is checked
 
-```sh
-nix build
-```
+Compiling `Main` typechecks `Site.Properties`, so no site is built from content that breaks these:
 
-The `result` symlink points to a Nix output containing only the deployable site. The flake lock pins the exact nixpkgs revision used for Pandoc and the other build tools.
+| Theorem | Statement |
+|---|---|
+| `pages-complete` | every page is generated |
+| `nav-complete` | every page except home is in the navigation |
+| `path-injective` | distinct pages are written to distinct files |
+| `citations-resolve` | for every build date, every citation link has its anchor on the publications page |
+| `labels-unique` | bibliography labels (BoZo25a, BoZo25b, …) are distinct |
+| `anchors-unique` | for every build date, no page defines an identifier twice |
+| `talks-newest-first` | the talk list is in reverse chronological order |
+| `assets-complete` | the build checks every static file it links to |
+| `text-inert` | escaped text contains no `<`, `>`, or `"` |
+
+By construction (no proof needed): internal links are values of `Target`, so a link to a non-existent page, publication, or file cannot be written; block content cannot appear inside phrasing content; links cannot nest; there is no raw-HTML constructor. At run time, `Main` refuses to build if a static file referenced by an `Asset` is missing.
 
 ## Content maintenance
 
-1. Edit global author, language, description, and canonical origin settings in `metadata.yaml`. Keep `site-url` free of a trailing slash.
-2. Edit page content in `pages/`. Each file supplies one page title, and the template emits the single `h1`.
-3. Maintain publication records in `bib/publications.bib`. The publications page alone runs `--citeproc`, `--bibliography`, and `--csl`.
-4. Put PDFs and other static files under `static/`. They are copied to the root of `public/`, so use relative links such as `files/slides/name.pdf`.
-5. Adjust `static/style.css` sparingly. The generated HTML remains complete and understandable without it.
-
-When adding a page, add its basename to `ORDINARY_PAGES` in the Makefile and add its navigation link to `template.html`. Run `make clean && make` after deleting or renaming source files; the build also prunes unexpected top-level HTML files.
-
-## Publication formatting
-
-`csl/american-mathematical-society-label.csl` is vendored and selected explicitly. Editing either the CSL file or the BibTeX database rebuilds `publications.html`; ordinary pages do not depend on either file. The generated copy of `bib/publications.bib` lets readers download the site's source bibliography.
+- **A talk:** add a `record talk { … }` to `src/Content/Talks.agda` and put it in `allTalks` at its chronological position (the build rejects a wrong position). The talks page, the home page's "Recent" list, and the upcoming/past wording follow from the record and the build date.
+- **A publication:** add a constructor to `PubId` in `src/Site/Ids.agda` (with its BibTeX key in `pubKey`), then a clause of `pub` in `src/Content/Publications.agda`. Agda reports every function that must now handle it (e.g. `allPubIds`, the theorems). The bibliography entry, label, status line, and `bib/publications.bib` are derived.
+- **A static file:** put it under `static/`, add a constructor to `Asset` with its path, and link it with `asset`.
+- **A page:** add a constructor to `Page`; Agda's coverage checker then lists every place that needs a case (path, title, description, body, the theorems).
+- **Prose:** `src/Content/Prose.agda` and `src/Content/Software.agda`. Write `t "text"`, `b` bold, `it` italic, `tt` code, `a target "label"` links, joined with `·`.
+- **Style:** `static/style.css`. The HTML stays readable without it.
 
 ## Deployment
 
@@ -90,5 +106,5 @@ If a machine is force-killed mid-deploy, a stale worktree registration can remai
 - Prefer stable filenames and citation keys; URLs outlive redesigns more easily than site structures.
 - Mark working notes, superseded papers, corrections, and archived software honestly.
 - Link legal open copies and retain source/reproducibility instructions where possible.
-- Periodically test internal links and rebuild with the locked Nix environment.
+- Rebuild periodically with the locked Nix environment; internal links are checked by types, external ones are not.
 - Update the lock intentionally with `nix flake update`, review the change, and rebuild.

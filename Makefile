@@ -1,6 +1,8 @@
-PANDOC ?= pandoc
+AGDA ?= agda
 PYTHON ?= python3
 PORT ?= 8000
+# The build date is an explicit input: the site is a function of it.
+TODAY ?= $(shell date +%F)
 # GitHub Pages is the active deploy target; Codeberg is optional (its remote
 # can be added later, then it is pushed alongside GitHub automatically).
 CODEBERG_USER ?= eapiova
@@ -10,45 +12,27 @@ GITHUB_REMOTE ?= github-pages
 DEPLOY_BRANCH ?= pages
 
 OUT := public
-TEMPLATE := template.html
-METADATA := metadata.yaml
-STYLESHEET := static/style.css
-BIBLIOGRAPHY := bib/publications.bib
-CSL := csl/american-mathematical-society-label.csl
-
-ORDINARY_PAGES := index research notes talks teaching software cv contact
-ORDINARY_HTML := $(addprefix $(OUT)/,$(addsuffix .html,$(ORDINARY_PAGES)))
-PUBLICATIONS_HTML := $(OUT)/publications.html
-HTML_OUTPUTS := $(ORDINARY_HTML) $(PUBLICATIONS_HTML)
-
-COMMON_DEPS := $(TEMPLATE) $(METADATA) $(STYLESHEET)
-COMMON_FLAGS := --standalone --to=html5 --wrap=none --template=$(TEMPLATE) \
-	--metadata-file=$(METADATA) --css=style.css --email-obfuscation=references
+BUILD := _build
+SITE := $(BUILD)/Main
+SOURCES := website.agda-lib $(shell find src -name '*.agda')
 
 .DEFAULT_GOAL := all
 
-.PHONY: all assets serve deploy clean
+.PHONY: all check serve deploy clean distclean
 
-all: $(HTML_OUTPUTS) assets
-	@for file in $(OUT)/*.html; do \
-		test -e "$$file" || continue; \
-		case " $(HTML_OUTPUTS) " in *" $$file "*) ;; *) rm -f "$$file" ;; esac; \
-	done
+# Typechecking Main also checks Site.Properties; compilation fails if a
+# proof fails, so no site is ever built from content that breaks them.
+$(SITE): $(SOURCES)
+	$(AGDA) --compile --compile-dir=$(BUILD) src/Main.agda
 
-$(OUT)/%.html: pages/%.md $(COMMON_DEPS)
-	@mkdir -p $(OUT)
-	$(PANDOC) $(COMMON_FLAGS) --metadata=canonical-path:$*.html --output=$@ $<
+check:
+	$(AGDA) src/Site/Properties.agda
 
-$(PUBLICATIONS_HTML): pages/publications.md $(COMMON_DEPS) $(BIBLIOGRAPHY) $(CSL)
-	@mkdir -p $(OUT)
-	$(PANDOC) $(COMMON_FLAGS) --metadata=canonical-path:publications.html \
-		--citeproc --bibliography=$(BIBLIOGRAPHY) --csl=$(CSL) --output=$@ $<
-
-assets:
-	@mkdir -p $(OUT)
+all: $(SITE)
+	rm -rf $(OUT)
+	mkdir -p $(OUT)
 	cp -R static/. $(OUT)/
-	@mkdir -p $(OUT)/bib
-	cp $(BIBLIOGRAPHY) $(OUT)/bib/publications.bib
+	LC_ALL=C.UTF-8 $(SITE) $(TODAY)
 
 serve: all
 	@printf 'Serving http://127.0.0.1:%s/\n' '$(PORT)'
@@ -117,3 +101,6 @@ deploy:
 
 clean:
 	rm -rf $(OUT)
+
+distclean: clean
+	rm -rf $(BUILD)
