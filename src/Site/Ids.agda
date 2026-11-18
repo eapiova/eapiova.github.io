@@ -107,9 +107,11 @@ pubKey jlc      = "borsetto-zorzi-s4dot2-jlc"
 
 data Asset : Set where
   cvPdf sstt26 pacman26 dagstuhl26 overlay25 ictcs25 : Asset
+  serifRegular serifItalic serifSemibold mono : Asset   -- referenced by style.css
 
 allAssets : List Asset
-allAssets = cvPdf ∷ sstt26 ∷ pacman26 ∷ dagstuhl26 ∷ overlay25 ∷ ictcs25 ∷ []
+allAssets = cvPdf ∷ sstt26 ∷ pacman26 ∷ dagstuhl26 ∷ overlay25 ∷ ictcs25
+          ∷ serifRegular ∷ serifItalic ∷ serifSemibold ∷ mono ∷ []
 
 assetPath : Asset → String
 assetPath cvPdf      = "files/cv.pdf"
@@ -118,6 +120,10 @@ assetPath pacman26   = "files/slides/pacman-2026.pdf"
 assetPath dagstuhl26 = "files/slides/dagstuhl-26121.pdf"
 assetPath overlay25  = "files/slides/overlay-2025.pdf"
 assetPath ictcs25    = "files/slides/ictcs-2025.pdf"
+assetPath serifRegular  = "fonts/LibertinusSerif-Regular.woff2"
+assetPath serifItalic   = "fonts/LibertinusSerif-Italic.woff2"
+assetPath serifSemibold = "fonts/LibertinusSerif-Semibold.woff2"
+assetPath mono          = "fonts/JuliaMono-RegularLatin.woff2"
 
 ------------------------------------------------------------------------
 -- Link targets
@@ -127,5 +133,6 @@ data Target : Set where
   ref    : PubId → Target    -- an entry of the bibliography
   asset  : Asset → Target    -- a static file
   bibtex : Target            -- the generated BibTeX file
+  bibOf  : PubId → Target    -- the BibTeX of one publication
   ext    : String → Target   -- an external URL
   mail   : String → Target   -- an e-mail address

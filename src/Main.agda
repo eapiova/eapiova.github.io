@@ -23,7 +23,7 @@ open import System.FilePath.Posix using (mkFilePath)
 open import Site.Date
 open import Site.Ids
 open import Site.Pages using (document)
-open import Site.Bibliography using (bibFile)
+open import Site.Bibliography using (bibFile; bibFileOf)
 import Site.Properties   -- the build does not proceed unless these proofs check
 
 toMonth : ℕ → Maybe Month
@@ -61,6 +61,7 @@ build today = do
   createDirectoryIfMissing true (mkFilePath "public/bib")
   List.mapM′ (λ p → writeFile ("public/" ++ path p) (document today p)) allPages
   writeFile "public/bib/publications.bib" bibFile
+  List.mapM′ (λ i → writeFile ("public/bib/" ++ pubKey i ++ ".bib") (bibFileOf i)) allPubIds
   putStrLn ("Built " ++ show (length allPages) ++ " pages for " ++ showDate today ++ ".")
 
 main : Main

@@ -32,8 +32,12 @@ dagstuhlTitle = b "“Proof Systems in Actual Practice: Reasoning and Computatio
 ------------------------------------------------------------------------
 -- Home
 
-subtitle : String
-subtitle = "PhD Student in Computer Science: Type Theory, Constructive Mathematics, Formalization"
+-- The home page title as an inference rule.
+premises : List String
+premises = "type theory" ∷ "constructive mathematics" ∷ "formalization" ∷ []
+
+ruleLabel : String
+ruleLabel = "PhD student, University of Verona"
 
 intro : List Block
 intro =
@@ -45,7 +49,7 @@ intro =
   ∷ []
 
 contactItems : List Inlines
-contactItems = (t "Email: " · a (mail email) email) ∷ identifiers
+contactItems = a (mail email) email ∷ identifiers
 
 ------------------------------------------------------------------------
 -- Research

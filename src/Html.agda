@@ -13,6 +13,8 @@ module Html where
 
 open import Data.List.Base using (List; []; _∷_; [_]; _++_)
 open import Data.String.Base using (String)
+open import Data.Maybe.Base using (Maybe)
+open import Data.Product.Base using (_×_)
 
 open import Site.Ids using (Target; PubId)
 
@@ -31,20 +33,31 @@ data Inline : Mode → Set where
 Inlines : Set
 Inlines = List (Inline flow)
 
--- One entry of a bibliography, anchored at the publication it describes.
-record Reference : Set where
-  constructor reference
+-- What hangs in the left margin of an entry: a date or a citation label.
+data Margin : Set where
+  stamp : (iso shown : String) → Margin    -- <time datetime="iso">shown</time>
+  tag   : String → Margin
+  blank : Margin
+
+-- An item of a chronological or labelled list.  `anchor` makes the entry
+-- the target of citations of that publication.
+record Entry : Set where
+  constructor entry
   field
-    entry : PubId
-    label : String
-    body  : Inlines
+    margin  : Margin
+    anchor  : Maybe PubId
+    heading : Maybe Inlines
+    body    : Inlines
+    links   : List Inlines
 
 data Block : Set where
-  para : Inlines → Block
-  h2   : Inlines → Block
-  h3   : Inlines → Block
-  ul   : List Inlines → Block
-  refs : List Reference → Block
+  para     : Inlines → Block
+  h2       : Inlines → Block
+  h3       : Inlines → Block
+  ul       : List Inlines → Block
+  inlineList : List Inlines → Block               -- a short list set on one line
+  entries  : List Entry → Block                   -- headed entries with a margin
+  timeline : List (Margin × Inlines) → Block      -- one-line entries with a margin
 
 ------------------------------------------------------------------------
 -- Writing content

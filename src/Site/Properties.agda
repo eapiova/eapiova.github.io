@@ -117,6 +117,10 @@ assets-complete pacman26   = there (there (here refl))
 assets-complete dagstuhl26 = there (there (there (here refl)))
 assets-complete overlay25  = there (there (there (there (here refl))))
 assets-complete ictcs25    = there (there (there (there (there (here refl)))))
+assets-complete serifRegular  = there (there (there (there (there (there (here refl))))))
+assets-complete serifItalic   = there (there (there (there (there (there (there (here refl)))))))
+assets-complete serifSemibold = there (there (there (there (there (there (there (there (here refl))))))))
+assets-complete mono          = there (there (there (there (there (there (there (there (there (here refl)))))))))
 
 ------------------------------------------------------------------------
 -- Escaped text cannot open a tag or end an attribute.

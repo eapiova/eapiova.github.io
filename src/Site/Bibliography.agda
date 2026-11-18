@@ -18,7 +18,7 @@ open import Function.Base using (_∘_)
 open import Html
 open import Site.Ids
 open import Site.Types
-open import Site.Util using (_==_; _≤ˢ_; sortBy; filterᵇ)
+open import Site.Util using (_==_; _≤ˢ_; sortBy; filterᵇ; andList)
 open import Content.Publications using (pub)
 
 open Publication
@@ -58,20 +58,11 @@ byLabel : List PubId
 byLabel = sortBy (λ i j → label i ≤ˢ label j) allPubIds
 
 ------------------------------------------------------------------------
--- Bibliography entries
+-- Entries
 
 private
   inverted : Person → String
   inverted p = Person.family p ++ ", " ++ Person.given p
-
-  authorList : List Person → String
-  authorList (p ∷ []) = inverted p
-  authorList ps       = go ps
-    where
-    go : List Person → String
-    go []       = ""
-    go (p ∷ []) = "and " ++ inverted p
-    go (p ∷ qs) = inverted p ++ ", " ++ go qs
 
   comma : Maybe String → Inlines
   comma = maybe (λ s → t (", " ++ s)) []
@@ -91,44 +82,31 @@ landing p with doi p | url p
 ... | nothing | just u  = just (ext u)
 ... | nothing | nothing = nothing
 
-entryBody : Publication → Inlines
-entryBody p = t (authorList (authors p) ++ ", ") · titled · venuePart · t (", " ++ statusText p ++ ".")
+-- Authors. Title. Where, publisher volume, pages, year.
+citation : Publication → Inlines
+citation p =
+  t (andList (map fullName (authors p)) ++ ". ")
+  · maybe (λ x → a x (title p)) (t (title p)) (landing p) · t ". "
+  · whereabouts (status p)
   where
-  titled = maybe (λ x → a x (title p)) (t (title p)) (landing p)
-  venuePart : Inlines
-  venuePart with kind p
-  ... | inproceedings = t ", in " · it (venue p) · comma (publisher p) · comma (address p)
-                      · maybe (λ r → t (", pp. " ++ range "–" r)) [] (pages p)
-  ... | article       = t (", " ++ venue p ++ " (" ++ show (year p) ++ ")")
+  whereabouts : Status → Inlines
+  whereabouts (submitted v) = t ("Submitted to " ++ v ++ ", " ++ show (year p) ++ ".")
+  whereabouts published =
+    t "In " · it (venue p) · comma (address p)
+    · comma (maybe (λ s → just (s ++ maybe (" " ++_) "" (volume p))) nothing (publisher p))
+    · maybe (λ r → t (", pages " ++ range "–" r)) [] (pages p)
+    · t (", " ++ show (year p) ++ ".")
 
-references : List Reference
-references = map (λ i → reference i (label i) (entryBody (pub i))) byLabel
-
-------------------------------------------------------------------------
--- Status and artifacts
-
-summary : Publication → Inlines
-summary p with status p
-... | submitted v = t ("Submitted to " ++ v ++ ", " ++ show (year p) ++ ".")
-... | published   =
-  t "In " · it (venue p) · comma (address p)
-  · comma (maybe (λ s → just (s ++ maybe (" volume " ++_) "" (volume p))) nothing (publisher p))
-  · maybe (λ r → t (", pages " ++ range "–" r)) [] (pages p)
-  · t (", " ++ show (year p) ++ ".")
-
-links : Publication → List Inlines
-links p = doiLink L.++ paperLink L.++ map (λ (l , u) → a (ext u) l) (artifacts p)
+pubLinks : PubId → List Inlines
+pubLinks i = doiLink L.++ paperLink L.++ map (λ (l , u) → a (ext u) l) (artifacts p)
+             L.++ a (bibOf i) "BibTeX" ∷ []
   where
+  p = pub i
   doiLink   = maybe (λ d → a (ext ("https://doi.org/" ++ d)) ("doi:" ++ d) ∷ []) [] (doi p)
   paperLink = maybe (λ u → a (ext u) "paper" ∷ []) [] (url p)
 
-statusItem : PubId → Inlines
-statusItem i = a (ref i) (label i) · t ", " · b ("“" ++ title p ++ "”.") · t " " · summary p · rest (links p)
-  where
-  p = pub i
-  rest : List Inlines → Inlines
-  rest [] = []
-  rest ls = t " " · concat (intersperse (t " · ") ls) · t "."
+pubEntry : PubId → Entry
+pubEntry i = entry (tag ("[" ++ label i ++ "]")) (just i) nothing (citation (pub i)) (pubLinks i)
 
 isPublished isSubmitted : PubId → Bool
 isPublished i with status (pub i)
@@ -187,3 +165,6 @@ bibEntry i =
 
 bibFile : String
 bibFile = S.intersperse "\n\n" (map bibEntry byLabel) ++ "\n"
+
+bibFileOf : PubId → String
+bibFileOf i = bibEntry i ++ "\n"

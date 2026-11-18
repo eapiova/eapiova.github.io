@@ -7,7 +7,7 @@ module Site.Date where
 open import Data.Bool.Base using (Bool; _∧_; if_then_else_)
 open import Data.Nat.Base using (ℕ; suc; _+_; _*_; _≤ᵇ_; _≡ᵇ_)
 open import Data.Nat.Show using (show)
-open import Data.String.Base using (String; _++_)
+open import Data.String.Base using (String; _++_; padLeft)
 
 data Month : Set where
   January February March April May June July
@@ -79,6 +79,32 @@ oneYearAfter d = record d { year = suc (year d) }
 showDate : Date → String
 showDate d = show (day d) ++ " " ++ monthName (month d) ++ " " ++ show (year d)
 
+monthShort : Month → String
+monthShort January   = "Jan"
+monthShort February  = "Feb"
+monthShort March     = "Mar"
+monthShort April     = "Apr"
+monthShort May       = "May"
+monthShort June      = "Jun"
+monthShort July      = "Jul"
+monthShort August    = "Aug"
+monthShort September = "Sep"
+monthShort October   = "Oct"
+monthShort November  = "Nov"
+monthShort December  = "Dec"
+
+-- 2026-11-26, for <time datetime="…">
+iso : Date → String
+iso d = show (year d) ++ "-" ++ two (monthIndex (month d)) ++ "-" ++ two (day d)
+  where
+  two : ℕ → String
+  two n = padLeft '0' 2 (show n)
+
+-- 26 Nov  and  26 Nov 2026
+showShort showShortYear : Date → String
+showShort d     = show (day d) ++ " " ++ monthShort (month d)
+showShortYear d = showShort d ++ " " ++ show (year d)
+
 showMonthYear : Date → String
 showMonthYear d = monthName (month d) ++ " " ++ show (year d)
 
@@ -98,3 +124,11 @@ showWhen (from d to e) =
   else showDate d ++ " - " ++ showDate e
   where
   sameMonth = (year d ≡ᵇ year e) ∧ (monthIndex (month d) ≡ᵇ monthIndex (month e))
+
+-- 26 Nov,  10–12 Jun,  30 Jun – 2 Jul
+showWhenShort : When → String
+showWhenShort (on d) = showShort d
+showWhenShort (from d to e) =
+  if (year d ≡ᵇ year e) ∧ (monthIndex (month d) ≡ᵇ monthIndex (month e))
+  then show (day d) ++ "–" ++ showShort e
+  else showShort d ++ " – " ++ showShort e

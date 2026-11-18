@@ -9,6 +9,8 @@ open import Data.Bool.Base using (Bool; if_then_else_; not; _∨_)
 open import Data.Char.Base using (Char; isAlpha; isDigit; isSpace; toLower)
   renaming (_≈ᵇ_ to _≈_)
 open import Data.List.Base as List using (List; []; _∷_; [_]; _++_; map; length; dropWhileᵇ)
+open import Data.Maybe.Base using (Maybe; just; nothing)
+open import Data.Product.Base using (_×_; _,_; proj₁; proj₂)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Nat.Show using (show)
 open import Data.String.Base as S using (String; toList; fromList; intersperse; words)
@@ -34,6 +36,7 @@ href (page p)  = path p
 href (ref i)   = path publications + "#" + refAnchor i
 href (asset x) = assetPath x
 href bibtex    = "bib/publications.bib"
+href (bibOf i) = "bib/" + pubKey i + ".bib"
 href (ext u)   = u
 href (mail m)  = "mailto:" + m
 
@@ -97,20 +100,31 @@ dedupe = go []
   go seen []       = []
   go seen (x ∷ xs) = freshen seen x ∷ go (freshen seen x ∷ seen) xs
 
-headingSlugs : List Block → List String
-headingSlugs []          = []
-headingSlugs (h2 xs ∷ bs) = slug (plains xs) ∷ headingSlugs bs
-headingSlugs (h3 xs ∷ bs) = slug (plains xs) ∷ headingSlugs bs
-headingSlugs (_ ∷ bs)     = headingSlugs bs
+entryHeadings : List Entry → List String
+entryHeadings []                                = []
+entryHeadings (entry _ _ (just h) _ _ ∷ es)     = slug (plains h) ∷ entryHeadings es
+entryHeadings (entry _ _ nothing _ _ ∷ es)      = entryHeadings es
 
-refAnchors : List Block → List String
-refAnchors []             = []
-refAnchors (refs rs ∷ bs) = "refs" ∷ map (refAnchor ∘ Reference.entry) rs ++ refAnchors bs
-refAnchors (_ ∷ bs)       = refAnchors bs
+entryAnchors : List Entry → List String
+entryAnchors []                                 = []
+entryAnchors (entry _ (just i) _ _ _ ∷ es)      = refAnchor i ∷ entryAnchors es
+entryAnchors (entry _ nothing _ _ _ ∷ es)       = entryAnchors es
+
+headingSlugs : List Block → List String
+headingSlugs []                = []
+headingSlugs (h2 xs ∷ bs)      = slug (plains xs) ∷ headingSlugs bs
+headingSlugs (h3 xs ∷ bs)      = slug (plains xs) ∷ headingSlugs bs
+headingSlugs (entries es ∷ bs) = entryHeadings es ++ headingSlugs bs
+headingSlugs (_ ∷ bs)          = headingSlugs bs
+
+citeAnchors : List Block → List String
+citeAnchors []                = []
+citeAnchors (entries es ∷ bs) = entryAnchors es ++ citeAnchors bs
+citeAnchors (_ ∷ bs)          = citeAnchors bs
 
 -- Every identifier a page defines ("content" is the main element).
 anchors : List Block → List String
-anchors bs = "content" ∷ dedupe (headingSlugs bs) ++ refAnchors bs
+anchors bs = "content" ∷ dedupe (headingSlugs bs) ++ citeAnchors bs
 
 ------------------------------------------------------------------------
 -- Flow content, one line per element
@@ -127,12 +141,39 @@ private
   item : Inlines → String
   item xs = "<li>" + inlines xs + "</li>"
 
-  entry : Reference → List String
-  entry (reference i l body) =
-      ("<div id=\"" + refAnchor i + "\" class=\"csl-entry\" role=\"listitem\">")
-    ∷ ("<div class=\"csl-left-margin\">[" + escape l + "] </div><div class=\"csl-right-inline\">" + inlines body + "</div>")
-    ∷ "</div>"
-    ∷ []
+  margin : Margin → String
+  margin (stamp i s) = "<time class=\"when\" datetime=\"" + escape i + "\">" + escape s + "</time>"
+  margin (tag s)     = "<span class=\"when\">" + escape s + "</span>"
+  margin blank       = "<span class=\"when\"></span>"
+
+  maybe′ : ∀ {A B : Set} → (A → B) → B → Maybe A → B
+  maybe′ f z (just x) = f x
+  maybe′ f z nothing  = z
+
+  linksLine : List Inlines → List String
+  linksLine [] = []
+  linksLine ls = ("    <ul class=\"links\">" + S.concat (map item ls) + "</ul>") ∷ []
+
+  -- Renders entries, consuming one identifier per heading.
+  entryLines : List String → List Entry → List String × List String
+  entryLines ids [] = [] , ids
+  entryLines ids (entry m anc hd body ls ∷ es) =
+    (open′ ∷ ("  " + margin m) ∷ "  <div class=\"what\">" ∷ head′
+      ++ ("    <p>" + inlines body + "</p>") ∷ links′ ++ "  </div>" ∷ "</li>" ∷ proj₁ more)
+    , proj₂ more
+    where
+    open′ = "<li class=\"entry\"" + idAttr anc + ">"
+      where
+      idAttr : Maybe PubId → String
+      idAttr (just i) = " id=\"" + refAnchor i + "\""
+      idAttr nothing  = ""
+    head′ : List String
+    head′ = maybe′ (λ h → ("    " + heading "h3" ids h) ∷ []) [] hd
+    ids′ : List String
+    ids′ = maybe′ (λ _ → rest ids) ids hd
+    links′ : List String
+    links′ = linksLine ls
+    more = entryLines ids′ es
 
   blocks : List String → List Block → List String
   blocks ids []             = []
@@ -140,9 +181,15 @@ private
   blocks ids (h2 xs ∷ bs)   = heading "h2" ids xs ∷ blocks (rest ids) bs
   blocks ids (h3 xs ∷ bs)   = heading "h3" ids xs ∷ blocks (rest ids) bs
   blocks ids (ul xs ∷ bs)   = "<ul>" ∷ map item xs ++ "</ul>" ∷ blocks ids bs
-  blocks ids (refs rs ∷ bs) =
-    "<div id=\"refs\" class=\"references csl-bib-body\" role=\"list\">"
-    ∷ List.concatMap entry rs ++ "</div>" ∷ blocks ids bs
+  blocks ids (inlineList xs ∷ bs) =
+    ("<ul class=\"inline\">" + S.concat (map item xs) + "</ul>") ∷ blocks ids bs
+  blocks ids (entries es ∷ bs) =
+    "<ol class=\"entries\">" ∷ proj₁ r ++ "</ol>" ∷ blocks (proj₂ r) bs
+    where r = entryLines ids es
+  blocks ids (timeline xs ∷ bs) =
+    "<ol class=\"entries timeline\">"
+    ∷ map (λ (m , x) → "<li class=\"entry\">" + margin m + "<div class=\"what\">" + inlines x + "</div></li>") xs
+    ++ "</ol>" ∷ blocks ids bs
 
 render : List Block → List String
 render bs = blocks (dedupe (headingSlugs bs)) bs

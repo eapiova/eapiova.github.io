@@ -27,9 +27,13 @@ from the build date to the HTML of each page. Talks, publications, and projects 
 │   ├── Site/Pages.agda        page bodies and the document layout
 │   ├── Site/Properties.agda   theorems about the site
 │   └── Content/               the facts: talks, publications, software, prose
-├── static/                    style.css, cv.pdf, slides (copied verbatim)
+├── static/                    style.css, fonts/, cv.pdf, slides (copied verbatim)
 └── public/                    generated; not committed
 ```
+
+## Design
+
+One self-hosted serif, Libertinus Serif, and JuliaMono for code, both under the SIL Open Font License (texts in `static/fonts/`). Blue-black ink on cool white, with a dark scheme that follows the reader's system setting. Dates and citation labels hang in a left margin column (`entries` and `timeline` blocks with a `Margin`); on narrow screens they fold above each entry. The home page title is set as an inference rule: research areas as premises, the name as conclusion, the affiliation as the rule's label (`premises` and `ruleLabel` in `src/Content/Prose.agda`). No scripts, no motion; the HTML reads fine without the stylesheet.
 
 ## Build and preview
 
@@ -66,7 +70,7 @@ By construction (no proof needed): internal links are values of `Target`, so a l
 ## Content maintenance
 
 - **A talk:** add a `record talk { … }` to `src/Content/Talks.agda` and put it in `allTalks` at its chronological position (the build rejects a wrong position). The talks page, the home page's "Recent" list, and the upcoming/past wording follow from the record and the build date.
-- **A publication:** add a constructor to `PubId` in `src/Site/Ids.agda` (with its BibTeX key in `pubKey`), then a clause of `pub` in `src/Content/Publications.agda`. Agda reports every function that must now handle it (e.g. `allPubIds`, the theorems). The bibliography entry, label, status line, and `bib/publications.bib` are derived.
+- **A publication:** add a constructor to `PubId` in `src/Site/Ids.agda` (with its BibTeX key in `pubKey`), then a clause of `pub` in `src/Content/Publications.agda`. Agda reports every function that must now handle it (e.g. `allPubIds`, the theorems). The entry, its label, its links, its own `bib/<key>.bib`, and `bib/publications.bib` are derived.
 - **A static file:** put it under `static/`, add a constructor to `Asset` with its path, and link it with `asset`.
 - **A page:** add a constructor to `Page`; Agda's coverage checker then lists every place that needs a case (path, title, description, body, the theorems).
 - **Prose:** `src/Content/Prose.agda` and `src/Content/Software.agda`. Write `t "text"`, `b` bold, `it` italic, `tt` code, `a target "label"` links, joined with `·`.

@@ -35,20 +35,20 @@ module _ (today : Date) (x : Talk) where
   upcoming : Bool
   upcoming = today ≤ᵈ start when
 
-  talkLine : Inlines
-  talkLine =
-    event · maybe (t ", " ·_) [] detail · t (", " ++ place) · maybe (t ", " ·_) [] remark
-    · t (", " ++ showWhen when) · (if upcoming then t " (upcoming)" else []) · t "."
-    · joint coauthors
-    · maybe (λ s → t (" " ++ s)) [] credit
-    · maybe (λ f → t " " · a (asset f) "Slides" · t ".") [] slides
+  -- Built as a record expression, so that its heading is known without
+  -- knowing the build date (Site.Properties relies on this).
+  talkEntry : Entry
+  talkEntry = entry (stamp (iso (start when)) (showWhenShort when)) nothing (just (t title)) line []
     where
     joint : List Person → Inlines
     joint [] = []
     joint ps = t (" Joint work with " ++ andList (map fullName ps) ++ ".")
-
-  talkBlocks : List Block
-  talkBlocks = h3 (t title) ∷ para talkLine ∷ []
+    line =
+      event · maybe (t ", " ·_) [] detail · t (", " ++ place) · maybe (t ", " ·_) [] remark · t "."
+      · (if upcoming then t " " · it "Upcoming." else [])
+      · joint coauthors
+      · maybe (λ s → t (" " ++ s)) [] credit
+      · maybe (λ f → t " " · a (asset f) "Slides" · t ".") [] slides
 
   -- The sentence for the home page, in the right tense.
   talkNews : News
@@ -57,8 +57,8 @@ module _ (today : Date) (x : Talk) where
     inCity = maybe (λ c → t (" in " ++ c)) [] city
     sentence =
       if upcoming
-      then t "I will speak at " · event · inCity · t (" on " ++ showWhen when ++ " on " ++ topic ++ ".")
-      else t "I spoke at " · event · inCity · t (" in " ++ showMonthYear (start when) ++ " on " ++ topic ++ ".")
+      then t "Speaking at " · event · inCity · t (" on " ++ topic ++ ". ") · it "Upcoming."
+      else t "Spoke at " · event · inCity · t (" on " ++ topic ++ ".")
 
 -- Consecutive talks grouped by year.
 byYear : List Talk → List (ℕ × List Talk)
@@ -70,7 +70,7 @@ byYear (x ∷ xs) with byYear xs
 
 talksBody : Date → List Block
 talksBody today =
-  concatMap (λ (y , ts) → h2 (t (show y)) ∷ concatMap (talkBlocks today) ts) (byYear allTalks)
+  concatMap (λ (y , ts) → h2 (t (show y)) ∷ entries (map (talkEntry today) ts) ∷ []) (byYear allTalks)
 
 ------------------------------------------------------------------------
 -- Home
@@ -79,34 +79,31 @@ otherNews : List News
 otherNews = news (20 jul 2026) (appeared glivenko) ∷ []
 
 -- Everything from the last twelve months, and everything still to come.
-recent : Date → List Inlines
+recent : Date → List (Margin × Inlines)
 recent today =
-  map News.body
+  map (λ n → stamp (iso (News.at n)) (showShortYear (News.at n)) , News.body n)
     (sortBy (λ m n → News.at n ≤ᵈ News.at m)
       (filterᵇ (λ n → today ≤ᵈ oneYearAfter (News.at n))
         (map (talkNews today) allTalks L.++ otherNews)))
 
 homeBody : Date → List Block
 homeBody today =
-  intro L.++ ( h2 (t "Contact and identifiers") ∷ ul contactItems
-             ∷ h2 (t "Recent") ∷ ul (recent today) ∷ [])
+  intro L.++ ( h2 (t "Recent") ∷ timeline (recent today)
+             ∷ h2 (t "Contact") ∷ inlineList contactItems ∷ [])
 
 ------------------------------------------------------------------------
 -- Publications
 
 publicationsBody : List Block
 publicationsBody =
-    para (t "The list below and the " · a bibtex "BibTeX file"
-          · t " are generated from the same typed records. The section that follows records the status and formal artifacts of each entry.")
-  ∷ h2 (t "Bibliography")
-  ∷ refs references
-  ∷ h2 (t "Status and artifacts")
+    para (t "Each entry links to its formal artifacts and its BibTeX; the "
+          · a bibtex "complete BibTeX file" · t " has them all.")
   ∷ section "Published" isPublished L.++ section "Under review" isSubmitted L.++ reports
   where
   section : String → (PubId → Bool) → List Block
-  section heading keep with filterᵇ keep allPubIds
+  section heading keep with filterᵇ keep byLabel
   ... | [] = []
-  ... | is = h3 (t heading) ∷ ul (map statusItem is) ∷ []
+  ... | is = h2 (t heading) ∷ entries (map pubEntry is) ∷ []
 
 ------------------------------------------------------------------------
 -- Software
@@ -138,9 +135,11 @@ body today software     = softwareBody
 body today cv           = cvBody
 body today contact      = contactBody
 
-subtitleOf : Page → Maybe String
-subtitleOf home = just subtitle
-subtitleOf _    = nothing
+-- The home page's title is set as an inference rule:
+-- research areas above the line, the name below, the affiliation as its label.
+premisesOf : Page → List String
+premisesOf home = premises
+premisesOf _    = []
 
 siteName siteUrl : String
 siteName = "Riccardo Borsetto"
@@ -166,6 +165,7 @@ document today p = unlines (
   ∷ ("  <meta property=\"og:title\" content=\"" ++ escape (fullTitle p) ++ "\">")
   ∷ ("  <meta property=\"og:description\" content=\"" ++ escape (description p) ++ "\">")
   ∷ ("  <meta property=\"og:site_name\" content=\"" ++ siteName ++ "\">")
+  ∷ ("  <link rel=\"preload\" href=\"" ++ assetPath serifRegular ++ "\" as=\"font\" type=\"font/woff2\" crossorigin>")
   ∷ "  <link rel=\"stylesheet\" href=\"style.css\">"
   ∷ "</head>"
   ∷ "<body>"
@@ -180,21 +180,29 @@ document today p = unlines (
   ∷ "  </header>"
   ∷ ""
   ∷ "  <main id=\"content\" tabindex=\"-1\">"
-  ∷ "    <header class=\"page-header\">"
-  ∷ ("      <h1>" ++ escape (pageTitle p) ++ "</h1>")
-  ∷ maybe (λ s → ("      <p class=\"subtitle\">" ++ escape s ++ "</p>") ∷ []) [] (subtitleOf p) L.++
-    "    </header>"
-  ∷ map ("    " ++_) (render (body today p)) L.++
+  ∷ pageHeader (premisesOf p) L.++
+    map ("    " ++_) (render (body today p)) L.++
     "  </main>"
   ∷ ""
   ∷ "  <footer class=\"site-footer\">"
-  ∷ ("    <p>A durable public index, generated by a total Agda program. <a href=\"" ++ path contact ++ "\">Contact " ++ siteName ++ "</a>.</p>")
+  ∷ ("    <p>Generated by a total Agda program, which checks that every internal link resolves. <a href=\"" ++ path contact ++ "\">Contact</a>.</p>")
   ∷ "  </footer>"
   ∷ "</body>"
   ∷ "</html>"
   ∷ [])
   where
   canonical = siteUrl ++ "/" ++ path p
+  pageHeader : List String → List String
+  pageHeader [] =
+      "    <header class=\"page-header\">"
+    ∷ ("      <h1>" ++ escape (pageTitle p) ++ "</h1>")
+    ∷ "    </header>" ∷ []
+  pageHeader ps =
+      "    <header class=\"page-header judgement\">"
+    ∷ ("      <ul class=\"premises\">" ++ S.concat (map (λ x → "<li>" ++ escape x ++ "</li>") ps) ++ "</ul>")
+    ∷ ("      <h1>" ++ escape (pageTitle p) ++ "</h1>")
+    ∷ ("      <p class=\"rule-label\">" ++ escape ruleLabel ++ "</p>")
+    ∷ "    </header>" ∷ []
   navItem : Page → String
   navItem q = "        <li><a href=\"" ++ path q ++ "\""
             ++ (if path q == path p then " aria-current=\"page\"" else "")
