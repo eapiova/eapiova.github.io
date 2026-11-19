@@ -82,6 +82,11 @@ By construction (no proof needed): internal links are values of `Target`, so a l
 
 ## Deployment
 
+**Automatic (normal case).** The source lives on the `main` branch of `github.com/eapiova/eapiova.github.io`. The workflow `.github/workflows/publish.yml` runs `make deploy` in the pinned Nix environment on every push to `main` and every day at 00:10 Korean time (`TZ: Asia/Seoul`; change it there when moving), so date-dependent wording (upcoming/past talks, the home page sections) stays current without any edit. Publishing an edit is just `git push github-pages main`. It can also be started by hand from the repository's Actions tab ("Run workflow"). GitHub pauses scheduled workflows in public repositories after 60 days without commits to the default branch; it sends an e-mail first, and re-enabling is one click in the Actions tab.
+
+**Manual.** The rest of this section describes `make deploy`, which the workflow also uses and which still works from a local checkout.
+
+
 Deployment is manual by design, with no CI. The `deploy` target rebuilds the site from a clean tree, prepares the `pages` branch in a temporary Git worktree, commits the generated static files there if they changed, and pushes that branch to GitHub (and to Codeberg too, if that remote is configured). It does not alter the source worktree. The target stops with a clear message if the GitHub remote is missing, if the source has no initial commit, or if the GitHub remote cannot be reached to check for the branch.
 
 The active host is **GitHub Pages**, serving the site at `https://eapiova.github.io/`. Codeberg Pages is an optional second host that can be added later without changing anything here. Both hosts serve from a branch named `pages`, which is why the deploy pushes `pages:pages`; if Codeberg is added, do not override `DEPLOY_BRANCH`, because Codeberg's git-pages serves a branch fixed to the name `pages`.

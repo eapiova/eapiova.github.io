@@ -1,0 +1,46 @@
+# Build the site with the pinned Nix environment and publish it to the
+# `pages` branch, which GitHub Pages serves.  Runs on every push to main
+# and once a day, because the site is a function of the build date
+# (upcoming talks become past talks without any change to the source).
+
+name: Publish
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "10 15 * * *"   # 00:10 in Korea, just after the date changes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      # The build date is "today" in this time zone.
+      TZ: Asia/Seoul
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Compiled Agda/Haskell from earlier runs; only changed modules rebuild.
+      - uses: actions/cache@v6
+        with:
+          path: _build
+          key: agda-build-${{ hashFiles('flake.lock') }}-${{ hashFiles('src/**', 'website.agda-lib') }}
+          restore-keys: agda-build-${{ hashFiles('flake.lock') }}-
+
+      - name: Build and publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          nix develop --command make deploy GITHUB_REMOTE=origin
