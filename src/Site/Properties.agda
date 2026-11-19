@@ -38,23 +38,21 @@ pages-complete : ∀ p → p ∈ allPages
 pages-complete home         = here refl
 pages-complete research     = there (here refl)
 pages-complete publications = there (there (here refl))
-pages-complete notes        = there (there (there (here refl)))
-pages-complete talks        = there (there (there (there (here refl))))
-pages-complete teaching     = there (there (there (there (there (here refl)))))
-pages-complete software     = there (there (there (there (there (there (here refl))))))
-pages-complete cv           = there (there (there (there (there (there (there (here refl)))))))
-pages-complete contact      = there (there (there (there (there (there (there (there (here refl))))))))
+pages-complete talks        = there (there (there (here refl)))
+pages-complete teaching     = there (there (there (there (here refl))))
+pages-complete software     = there (there (there (there (there (here refl)))))
+pages-complete cv           = there (there (there (there (there (there (here refl))))))
+pages-complete contact      = there (there (there (there (there (there (there (here refl)))))))
 
 nav-complete : ∀ p → p ≡ home ⊎ p ∈ navigation
 nav-complete home         = inj₁ refl
 nav-complete research     = inj₂ (here refl)
 nav-complete publications = inj₂ (there (here refl))
-nav-complete notes        = inj₂ (there (there (here refl)))
-nav-complete talks        = inj₂ (there (there (there (here refl))))
-nav-complete teaching     = inj₂ (there (there (there (there (here refl)))))
-nav-complete software     = inj₂ (there (there (there (there (there (here refl))))))
-nav-complete cv           = inj₂ (there (there (there (there (there (there (here refl)))))))
-nav-complete contact      = inj₂ (there (there (there (there (there (there (there (here refl))))))))
+nav-complete talks        = inj₂ (there (there (here refl)))
+nav-complete teaching     = inj₂ (there (there (there (here refl))))
+nav-complete software     = inj₂ (there (there (there (there (here refl)))))
+nav-complete cv           = inj₂ (there (there (there (there (there (here refl))))))
+nav-complete contact      = inj₂ (there (there (there (there (there (there (here refl)))))))
 
 ------------------------------------------------------------------------
 -- Distinct pages are written to distinct files.
@@ -63,7 +61,6 @@ fromPath-path : ∀ p → fromPath (path p) ≡ just p
 fromPath-path home         = refl
 fromPath-path research     = refl
 fromPath-path publications = refl
-fromPath-path notes        = refl
 fromPath-path talks        = refl
 fromPath-path teaching     = refl
 fromPath-path software     = refl
@@ -82,7 +79,6 @@ fromOutPath-outPath : ∀ d p → fromOutPath (outPath d p) ≡ just (d , p)
 fromOutPath-outPath plain home         = refl
 fromOutPath-outPath plain research     = refl
 fromOutPath-outPath plain publications = refl
-fromOutPath-outPath plain notes        = refl
 fromOutPath-outPath plain talks        = refl
 fromOutPath-outPath plain teaching     = refl
 fromOutPath-outPath plain software     = refl
@@ -91,7 +87,6 @@ fromOutPath-outPath plain contact      = refl
 fromOutPath-outPath agda  home         = refl
 fromOutPath-outPath agda  research     = refl
 fromOutPath-outPath agda  publications = refl
-fromOutPath-outPath agda  notes        = refl
 fromOutPath-outPath agda  talks        = refl
 fromOutPath-outPath agda  teaching     = refl
 fromOutPath-outPath agda  software     = refl
@@ -127,7 +122,6 @@ anchors-unique : ∀ today p → Unique (anchors (body today p))
 anchors-unique today home         = from-yes (unique? (anchors (body today home)))
 anchors-unique today research     = from-yes (unique? (anchors (body today research)))
 anchors-unique today publications = from-yes (unique? (anchors (body today publications)))
-anchors-unique today notes        = from-yes (unique? (anchors (body today notes)))
 anchors-unique today talks        = from-yes (unique? (anchors (body today talks)))
 anchors-unique today teaching     = from-yes (unique? (anchors (body today teaching)))
 anchors-unique today software     = from-yes (unique? (anchors (body today software)))

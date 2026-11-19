@@ -19,22 +19,21 @@ open import Site.Util using (_==_)
 -- Pages
 
 data Page : Set where
-  home research publications notes talks teaching software cv contact : Page
+  home research publications talks teaching software cv contact : Page
 
 allPages : List Page
-allPages = home ∷ research ∷ publications ∷ notes ∷ talks ∷ teaching
+allPages = home ∷ research ∷ publications ∷ talks ∷ teaching
          ∷ software ∷ cv ∷ contact ∷ []
 
 -- The primary navigation; the site name links home.
 navigation : List Page
-navigation = research ∷ publications ∷ notes ∷ talks ∷ teaching
+navigation = research ∷ publications ∷ talks ∷ teaching
            ∷ software ∷ cv ∷ contact ∷ []
 
 path : Page → String
 path home         = "index.html"
 path research     = "research.html"
 path publications = "publications.html"
-path notes        = "notes.html"
 path talks        = "talks.html"
 path teaching     = "teaching.html"
 path software     = "software.html"
@@ -47,7 +46,6 @@ fromPath s =
   if s == "index.html"        then just home         else
   if s == "research.html"     then just research     else
   if s == "publications.html" then just publications else
-  if s == "notes.html"        then just notes        else
   if s == "talks.html"        then just talks        else
   if s == "teaching.html"     then just teaching     else
   if s == "software.html"     then just software     else
@@ -59,7 +57,6 @@ navLabel : Page → String
 navLabel home         = "Home"
 navLabel research     = "Research"
 navLabel publications = "Publications"
-navLabel notes        = "Notes"
 navLabel talks        = "Talks"
 navLabel teaching     = "Teaching"
 navLabel software     = "Software"
@@ -70,7 +67,6 @@ pageTitle : Page → String
 pageTitle home         = "Riccardo Borsetto"
 pageTitle research     = "Research"
 pageTitle publications = "Publications"
-pageTitle notes        = "Notes"
 pageTitle talks        = "Talks"
 pageTitle teaching     = "Teaching"
 pageTitle software     = "Software / Formalizations"
@@ -81,7 +77,6 @@ description : Page → String
 description home         = "Academic website of Riccardo Borsetto, PhD student in computer science at the University of Verona."
 description research     = "Research by Riccardo Borsetto in type theory, proof theory, constructive mathematics, and formalization."
 description publications = "Publications by Riccardo Borsetto, with status and formalization links."
-description notes        = "Expository notes by Riccardo Borsetto."
 description talks        = "Talks and presentation materials by Riccardo Borsetto."
 description teaching     = "Teaching experience of Riccardo Borsetto."
 description software     = "Proof-assistant developments, research software, and formalizations by Riccardo Borsetto."

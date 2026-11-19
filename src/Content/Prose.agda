@@ -81,10 +81,7 @@ reports =
   ∷ []
 
 ------------------------------------------------------------------------
--- Notes, teaching, CV, contact
-
-notesBody : List Block
-notesBody = para (t "Expository notes will appear here.") ∷ []
+-- Teaching, CV, contact
 
 teachingBody : List Block
 teachingBody =

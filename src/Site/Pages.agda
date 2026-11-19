@@ -130,7 +130,6 @@ body : Date → Page → List Block
 body today home         = homeBody today
 body today research     = researchBody
 body today publications = publicationsBody
-body today notes        = notesBody
 body today talks        = talksBody today
 body today teaching     = teachingBody
 body today software     = softwareBody
@@ -156,7 +155,6 @@ signatureOf : Page → String
 signatureOf home         = signature homeBody
 signatureOf research     = signature researchBody
 signatureOf publications = signature pub
-signatureOf notes        = signature notesBody
 signatureOf talks        = signature allTalks
 signatureOf teaching     = signature teachingBody
 signatureOf software     = signature projects
