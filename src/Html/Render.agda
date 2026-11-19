@@ -191,7 +191,9 @@ module _ (root : String) where
     blocks ids (entries es ∷ bs) =
       "<ol class=\"entries\">" ∷ proj₁ r ++ "</ol>" ∷ blocks (proj₂ r) bs
       where r = entryLines ids es
-    blocks ids (timeline xs ∷ bs) =
+    blocks ids (timeline none [] ∷ bs) =
+      ("<p class=\"none\">" + inlines none + "</p>") ∷ blocks ids bs
+    blocks ids (timeline _ xs ∷ bs) =
       "<ol class=\"entries timeline\">"
       ∷ map (λ (m , x) → "<li class=\"entry\">" + margin m + "<div class=\"what\">" + inlines x + "</div></li>") xs
       ++ "</ol>" ∷ blocks ids bs

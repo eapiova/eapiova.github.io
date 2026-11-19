@@ -57,7 +57,8 @@ data Block : Set where
   ul       : List Inlines → Block
   inlineList : List Inlines → Block               -- a short list set on one line
   entries  : List Entry → Block                   -- headed entries with a margin
-  timeline : List (Margin × Inlines) → Block      -- one-line entries with a margin
+  timeline : Inlines → List (Margin × Inlines) → Block   -- one-line entries with a margin;
+                                                       -- the text is shown when there are none
 
 ------------------------------------------------------------------------
 -- Writing content

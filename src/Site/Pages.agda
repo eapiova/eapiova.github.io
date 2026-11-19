@@ -5,7 +5,7 @@
 
 module Site.Pages where
 
-open import Data.Bool.Base using (Bool; if_then_else_)
+open import Data.Bool.Base using (Bool; if_then_else_; not)
 open import Data.List.Base as L using (List; []; _∷_; [_]; map; concatMap)
 open import Data.Maybe.Base using (Maybe; just; nothing; maybe)
 open import Data.Nat.Base using (ℕ; _≡ᵇ_)
@@ -59,7 +59,7 @@ module _ (today : Date) (x : Talk) where
     inCity = maybe (λ c → t (" in " ++ c)) [] city
     sentence =
       if upcoming
-      then t "Speaking at " · event · inCity · t (" on " ++ topic ++ ". ") · it "Upcoming."
+      then t "Speaking at " · event · inCity · t (" on " ++ topic ++ ".")
       else t "Spoke at " · event · inCity · t (" on " ++ topic ++ ".")
 
 -- Consecutive talks grouped by year.
@@ -80,17 +80,35 @@ talksBody today =
 otherNews : List News
 otherNews = news (20 jul 2026) (appeared glivenko) ∷ []
 
--- Everything from the last twelve months, and everything still to come.
-recent : Date → List (Margin × Inlines)
-recent today =
-  map (λ n → stamp (iso (News.at n)) (showShortYear (News.at n)) , News.body n)
-    (sortBy (λ m n → News.at n ≤ᵈ News.at m)
-      (filterᵇ (λ n → today ≤ᵈ oneYearAfter (News.at n))
-        (map (talkNews today) allTalks L.++ otherNews)))
+-- How many past items the home page shows.
+recentMax : ℕ
+recentMax = 5
 
+allNews : Date → List News
+allNews today = map (talkNews today) allTalks L.++ otherNews
+
+dated : News → Margin × Inlines
+dated n = stamp (iso (News.at n)) (showShortYear (News.at n)) , News.body n
+
+-- Still to come (from today on), soonest first.
+upcomingNews : Date → List (Margin × Inlines)
+upcomingNews today =
+  map dated (sortBy (λ m n → News.at m ≤ᵈ News.at n)
+              (filterᵇ (λ n → today ≤ᵈ News.at n) (allNews today)))
+
+-- Already happened, newest first, at most recentMax.
+recentNews : Date → List (Margin × Inlines)
+recentNews today =
+  map dated (L.take recentMax
+    (sortBy (λ m n → News.at n ≤ᵈ News.at m)
+      (filterᵇ (λ n → not (today ≤ᵈ News.at n)) (allNews today))))
+
+-- Both headings are always present (whether a section is empty is
+-- decided inside the block), so the anchors do not depend on the date.
 homeBody : Date → List Block
 homeBody today =
-  intro L.++ ( h2 (t "Recent") ∷ timeline (recent today)
+  intro L.++ ( h2 (t "Upcoming") ∷ timeline (t "Nothing scheduled at the moment.") (upcomingNews today)
+             ∷ h2 (t "Recent") ∷ timeline [] (recentNews today)
              ∷ h2 (t "Contact") ∷ inlineList contactItems ∷ [])
 
 ------------------------------------------------------------------------
