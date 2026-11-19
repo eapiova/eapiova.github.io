@@ -186,6 +186,7 @@ li + li { margin-top: 0.3rem; }
 
 /* Entries: the date or label as a constructor-coloured stamp above. */
 ol.entries { margin: 0; padding: 0; list-style: none; }
+p.none { color: var(--muted); font-style: italic; }
 .entry { margin: 0 0 1.4rem; }
 .timeline .entry { margin-bottom: 0.9rem; }
 .entry .when {
