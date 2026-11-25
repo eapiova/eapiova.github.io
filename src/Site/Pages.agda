@@ -118,7 +118,7 @@ homeBody today =
 
 publicationsBody : List Block
 publicationsBody =
-    para (t "Each entry links to its formal artifacts and its BibTeX; the "
+    para (t "Each entry links to its formal artefacts and its BibTeX; the "
           · a bibtex "complete BibTeX file" · t " has them all.")
   ∷ section "Published" isPublished L.++ section "Under review" isSubmitted L.++ reports
   where

@@ -44,7 +44,7 @@ filterᵇ : ∀ {A : Set} → (A → Bool) → List A → List A
 filterᵇ p []       = []
 filterᵇ p (x ∷ xs) = if p x then x ∷ filterᵇ p xs else filterᵇ p xs
 
--- "A", "A and B", "A, B, and C"
+-- "A", "A and B", "A, B and C" (British: no serial comma)
 andList : List String → String
 andList []           = ""
 andList (x ∷ [])     = x
@@ -53,5 +53,6 @@ andList (x ∷ y ∷ z ∷ zs) = x ++ ", " ++ andList′ (y ∷ z ∷ zs)
   where
   andList′ : List String → String
   andList′ []           = ""
-  andList′ (x ∷ [])     = "and " ++ x
-  andList′ (x ∷ y ∷ ys) = x ++ ", " ++ andList′ (y ∷ ys)
+  andList′ (x ∷ [])     = x
+  andList′ (x ∷ y ∷ []) = x ++ " and " ++ y
+  andList′ (x ∷ y ∷ z ∷ zs) = x ++ ", " ++ andList′ (y ∷ z ∷ zs)

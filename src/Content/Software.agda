@@ -11,10 +11,10 @@ open import Site.Types
 s4dot2 nuclear regcat archimedean agdarya cubicalContrib cartmell : Project
 
 s4dot2 = project "s4dot2-cut-elimination" "https://github.com/eapiova/s4dot2-cut-elimination"
-  (t "This Cubical Agda development formalizes cut elimination and the finite model property for S4.2. It is the formal artifact accompanying the S4.2 papers.")
+  (t "This Cubical Agda development formalises cut elimination and the finite model property for S4.2. It is the formal artefact accompanying the S4.2 papers.")
 
 nuclear = project "nuclear" "https://github.com/eapiova/nuclear"
-  (t "This Cubical Agda project proves conservation theorems for nuclei over substructural entailment relations, taking Full Lambek logic as the base system. It is the formal artifact of the CiE 2026 paper and includes contributions by Thorsten Altenkirch. "
+  (t "This Cubical Agda project proves conservation theorems for nuclei over substructural entailment relations, taking Full Lambek logic as the base system. It is the formal artefact of the CiE 2026 paper and includes contributions by Thorsten Altenkirch. "
    · a (ext "https://eapiova.github.io/nuclear/") "Rendered Agda HTML" · t ".")
 
 regcat = project "regcat-normal-form" "https://github.com/eapiova/regcat-normal-form"
@@ -29,7 +29,7 @@ agdarya = project "agdarya" "https://github.com/eapiova/agdarya"
 
 cubicalContrib = project "Contributions to LorenzoMolena/cubical" "https://github.com/LorenzoMolena/cubical"
   (t "My merged pull requests to this experimental Cubical Agda library concern constructive real analysis: Cauchy completion, premetric spaces, univalence of "
-   · tt "PrSpaces" · t ", and a domain-specific language.")
+   · tt "PrSpaces" · t " and a domain-specific language.")
 
 cartmell = project "cartmell-thesis" "https://github.com/eapiova/cartmell-thesis"
   (t "A community effort, with Peter LeFanu Lumsdaine and others, to typeset John Cartmell’s PhD thesis, "

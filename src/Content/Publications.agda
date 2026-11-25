@@ -30,7 +30,7 @@ pub glivenko = record publication
   ; pages     = just (162 , 177)
   ; year      = 2026
   ; doi       = just "10.1007/978-3-032-31348-5_11"
-  ; artifacts = ("formalization" , "https://github.com/eapiova/nuclear")
+  ; artifacts = ("formalisation" , "https://github.com/eapiova/nuclear")
               ∷ ("rendered Agda HTML" , "https://eapiova.github.io/nuclear/")
               ∷ []
   }
@@ -53,7 +53,7 @@ pub ictcs = record publication
   ; pages     = just (163 , 168)
   ; year      = 2025
   ; url       = just "https://ceur-ws.org/Vol-4039/#paper17"
-  ; artifacts = ("formalization" , s4dot2Repo) ∷ []
+  ; artifacts = ("formalisation" , s4dot2Repo) ∷ []
   }
 pub jlc = record publication
   { kind      = article
@@ -62,5 +62,5 @@ pub jlc = record publication
   ; venue     = "Journal of Logic and Computation"
   ; year      = 2026
   ; status    = submitted "the Journal of Logic and Computation"
-  ; artifacts = ("formalization" , s4dot2Repo) ∷ []
+  ; artifacts = ("formalisation" , s4dot2Repo) ∷ []
   }
