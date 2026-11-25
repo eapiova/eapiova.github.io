@@ -99,7 +99,7 @@ teachingBody =
           · t "), and Computability, taught by Paolo Baldan ("
           · a (ext "https://web.archive.org/web/20220523022657/http://www.math.unipd.it/~baldan/Computability/") "2021/22" · t ", "
           · a (ext "https://web.archive.org/web/20230206040340/http://www.math.unipd.it/~baldan/Computability/") "2022/23"
-          · t ").")
+          · t "). For Logic, also exam invigilator, under a separate contract.")
        ∷ (b "Mathematics and Physics teacher" · t ", Liceo (Veneto), 2019-2020.")
        ∷ [])
   ∷ []
@@ -121,6 +121,7 @@ cvBody =
   ∷ h2 (t "Teaching")
   ∷ ul ( t "Tutor (exercise classes), University of Verona, 2024-2025: Foundations of Mathematics I; Mathematical Logic."
        ∷ t "Tutor (exercise classes), University of Padua, September 2021 - May 2023: Logic; Computability."
+       ∷ t "Exam invigilator, University of Padua, 2021-2023: Logic."
        ∷ t "Mathematics and Physics teacher, Liceo (Veneto), 2019-2020."
        ∷ [])
   ∷ h2 (t "Service")
