@@ -87,7 +87,9 @@ reports =
 teachingBody : List Block
 teachingBody =
     h2 (t "University of Verona")
-  ∷ ul ( (b "Tutor" · t ", exercise classes, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
+  ∷ ul ( (b "Tutor" · t ", exercise classes and marking of submitted exercises, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1293&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S20R&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
+          · t ", taught by Peter M. Schuster.")
+       ∷ (b "Tutor" · t ", exercise classes, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
           · t ", taught by Peter M. Schuster.")
        ∷ (b "Tutor" · t ", exercise classes, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=389&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S72&codins=4S001096&discr=&discrCd=&lang=en") "Mathematical Logic"
           · t ", taught by Peter M. Schuster.")
@@ -119,7 +121,7 @@ cvBody =
        ∷ (t "See the complete " · a (page talks) "talks" · t " list.")
        ∷ [])
   ∷ h2 (t "Teaching")
-  ∷ ul ( t "Tutor (exercise classes), University of Verona, 2024-2025: Foundations of Mathematics I; Mathematical Logic."
+  ∷ ul ( t "Tutor (exercise classes), University of Verona, 2024-2026: Foundations of Mathematics I (2024-2026, also marking submitted exercises in 2025-2026); Mathematical Logic (2024-2025)."
        ∷ t "Tutor (exercise classes), University of Padua, September 2021 - May 2023: Logic; Computability."
        ∷ t "Exam invigilator, University of Padua, 2021-2023: Logic."
        ∷ t "Mathematics and Physics teacher, Liceo (Veneto), 2019-2020."
