@@ -92,14 +92,14 @@ reports =
 
 teachingBody : List Block
 teachingBody =
-  ul ( (b "Tutor" · t ", University of Verona, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1293&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S20R&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
-        · t ", taught by " · who schuster · t ". Exercise classes and marking of submitted exercises.")
+  ul ( (b "Tutor" · t ", University of Verona, 2024-2026: Foundations of Mathematics I, taught by " · who schuster · t " ("
+        · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "2024/25" · t ", "
+        · a (ext "https://www.corsi.univr.it/?ent=cs&id=1293&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S20R&codins=4S02752&discr=&discrCd=&lang=en") "2025/26"
+        · t "). Exercise classes; in 2025/26 also marking of submitted exercises.")
      ∷ (b "Tutor" · t ", University of Verona, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1352&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S72R&codins=4S001096&discr=&discrCd=&lang=en") "Mathematical Logic"
         · t ", taught by " · who schuster · t ". Exercise classes.")
      ∷ (b "Tutor" · t ", University of Verona, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=389&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S72&codins=4S001104&discr=&discrCd=&lang=en") "Advanced Course in Foundations of Mathematics"
         · t ", taught by " · who schuster · t " and " · who zorzi · t ". Exercise classes.")
-     ∷ (b "Tutor" · t ", University of Verona, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
-        · t ", taught by " · who schuster · t ". Exercise classes.")
      ∷ (b "Tutor" · t ", University of Padua, 2021-2023: Logic, taught by " · who maietti · t " ("
         · a (ext "https://www.math.unipd.it/~maietti/lez22.html") "2021/22" · t ", "
         · a (ext "https://www.math.unipd.it/~maietti/lez23.html") "2022/23"
