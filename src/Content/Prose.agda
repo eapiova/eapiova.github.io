@@ -13,8 +13,9 @@ open import Site.Ids
 ------------------------------------------------------------------------
 -- Shared facts
 
-email : String
-email = "riccardo.borsetto@univr.it"
+email personalEmail : String
+email         = "riccardo.borsetto@univr.it"
+personalEmail = "eapiova@gmail.com"
 
 logicGroup : Target
 logicGroup = ext "https://www.logicverona.it/"
@@ -49,7 +50,7 @@ intro =
   ∷ []
 
 contactItems : List Inlines
-contactItems = a (mail email) email ∷ identifiers
+contactItems = a (mail email) email ∷ a (mail personalEmail) personalEmail ∷ identifiers
 
 ------------------------------------------------------------------------
 -- Research
@@ -139,7 +140,7 @@ cvBody =
 contactBody : List Block
 contactBody =
     h2 (t "Email")
-  ∷ para (a (mail email) email)
+  ∷ para (a (mail email) email · t " (university)" · nl · a (mail personalEmail) personalEmail · t " (personal)")
   ∷ h2 (t "Affiliation")
   ∷ para (t "Department of Computer Science" · nl · t "University of Verona" · nl
           · t "Strada le Grazie 15" · nl · t "37134 Verona, Italy")
