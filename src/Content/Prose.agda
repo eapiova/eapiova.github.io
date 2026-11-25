@@ -20,6 +20,10 @@ personalEmail = "eapiova@gmail.com"
 logicGroup : Target
 logicGroup = ext "https://www.logicverona.it/"
 
+-- The group's page on the department website.
+logicGroupDept : Target
+logicGroupDept = ext "https://www.di.univr.it/?ent=grupporic&id=231&lang=en"
+
 identifiers : List Inlines
 identifiers =
     a (ext "https://orcid.org/0009-0001-4751-1516") "ORCID 0009-0001-4751-1516"
@@ -44,6 +48,7 @@ intro : List Block
 intro =
     para (t "I am a PhD student at the Department of Computer Science of the University of Verona, where I started in October 2024. I am a member of the "
           · a logicGroup "Logic group"
+          · t " (" · a logicGroupDept "department page" · t ")"
           · t " led by Peter M. Schuster and Andrea Masini, supervised by Margherita Zorzi and Isabella Mastroeni.")
   ∷ para (t "I work on formalised proof theory for modal logic, constructive and computable real analysis, nuclei for substructural logics and categorical logic. A fuller introduction is on the "
           · a (page research) "research page" · t ".")
@@ -155,7 +160,7 @@ contactBody =
   ∷ h2 (t "Affiliation")
   ∷ para (t "Department of Computer Science" · nl · t "University of Verona" · nl
           · t "Strada le Grazie 15" · nl · t "37134 Verona, Italy")
-  ∷ para (a logicGroup "Logic group")
+  ∷ para (t "Logic group: " · a logicGroup "website" · t ", " · a logicGroupDept "department page")
   ∷ h2 (t "Scholarly identifiers")
   ∷ ul identifiers
   ∷ []
