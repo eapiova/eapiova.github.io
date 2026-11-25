@@ -43,7 +43,7 @@ intro : List Block
 intro =
     para (t "I am a PhD student at the Department of Computer Science of the University of Verona, where I started in October 2024. I am a member of the "
           · a logicGroup "Logic group"
-          · t " led by Peter M. Schuster, advised by Margherita Zorzi and Isabella Mastroeni.")
+          · t " led by Peter M. Schuster, supervised by Margherita Zorzi and Isabella Mastroeni.")
   ∷ para (t "I work on formalised proof theory for modal logic, constructive and computable real analysis, nuclei for substructural logics and categorical logic. A fuller introduction is on the "
           · a (page research) "research page" · t ".")
   ∷ []
@@ -99,7 +99,7 @@ cvBody : List Block
 cvBody =
     para (a (asset cvPdf) "PDF version")
   ∷ h2 (t "Education")
-  ∷ ul ( (b "PhD in Computer Science" · t ", University of Verona, October 2024 - present. Logic group; advisors: Margherita Zorzi and Isabella Mastroeni. Thesis topic: proof theory for modal logic, formalised in Cubical Agda.")
+  ∷ ul ( (b "PhD in Computer Science" · t ", University of Verona, October 2024 - present. Logic group; supervisors: Margherita Zorzi and Isabella Mastroeni. Thesis topic: proof theory for modal logic, formalised in Cubical Agda.")
        ∷ (b "MSc in Computer Science" · t ", University of Padua, April 2023, 110/110 summa cum laude (Erasmus+ exchange at Radboud University Nijmegen). Thesis: "
           · it "A canonical normal form theorem for the type theory of regular categories" · t ".")
        ∷ (b "MSc in Mathematics" · t ", University of Padua, April 2019, 110/110. Thesis: "
