@@ -5,6 +5,7 @@ module Content.Software where
 open import Data.List.Base using (List; []; _∷_)
 
 open import Html
+open import Content.People
 open import Site.Ids
 open import Site.Types
 
@@ -14,7 +15,7 @@ s4dot2 = project "s4dot2-cut-elimination" "https://github.com/eapiova/s4dot2-cut
   (t "This Cubical Agda development formalises cut elimination and the finite model property for S4.2. It is the formal artefact accompanying the S4.2 papers.")
 
 nuclear = project "nuclear" "https://github.com/eapiova/nuclear"
-  (t "This Cubical Agda project proves conservation theorems for nuclei over substructural entailment relations, taking Full Lambek logic as the base system. It is the formal artefact of the CiE 2026 paper and includes contributions by Thorsten Altenkirch. "
+  (t "This Cubical Agda project proves conservation theorems for nuclei over substructural entailment relations, taking Full Lambek logic as the base system. It is the formal artefact of the CiE 2026 paper and includes contributions by " · who altenkirch · t ". "
    · a (ext "https://eapiova.github.io/nuclear/") "Rendered Agda HTML" · t ".")
 
 regcat = project "regcat-normal-form" "https://github.com/eapiova/regcat-normal-form"
@@ -32,7 +33,7 @@ cubicalContrib = project "Contributions to LorenzoMolena/cubical" "https://githu
    · tt "PrSpaces" · t " and a domain-specific language.")
 
 cartmell = project "cartmell-thesis" "https://github.com/eapiova/cartmell-thesis"
-  (t "A community effort, with Peter LeFanu Lumsdaine and others, to typeset John Cartmell’s PhD thesis, "
+  (t "A community effort, with " · who lumsdaine · t " and others, to typeset John Cartmell’s PhD thesis, "
    · it "Generalised Algebraic Theories and Contextual Categories" · t ", in TeX.")
 
 projects : List Project

@@ -25,6 +25,7 @@ open import Site.Bibliography
 open import Content.Talks using (allTalks)
 open import Content.Software using (projects; archive)
 open import Content.Prose
+open import Content.People using (andWho)
 open import Content.Publications using (pub)
 open import Site.Signature using (signature)
 
@@ -48,12 +49,12 @@ module _ (today : Date) (x : Talk) where
     where
     joint : List Person → Inlines
     joint [] = []
-    joint ps = t (" Joint work with " ++ andList (map fullName ps) ++ ".")
+    joint ps = t " Joint work with " · andWho ps · t "."
     line =
       eventRef · maybe (t ", " ·_) [] detail · t (", " ++ place) · maybe (t ", " ·_) [] remark · t "."
       · (if upcoming then t " " · it "Upcoming." else [])
       · joint coauthors
-      · maybe (λ s → t (" " ++ s)) [] credit
+      · maybe (λ c → t " " · c) [] credit
       · maybe (λ f → t " " · a (asset f) "Slides" · t ".") [] slides
 
   -- The sentence for the home page, in the right tense.

@@ -17,8 +17,9 @@ open import Site.Ids using (Asset)
 record Person : Set where
   constructor person
   field
-    given  : String
-    family : String
+    given    : String
+    family   : String
+    homepage : Maybe String
 
 fullName : Person → String
 fullName p = Person.given p ++ " " ++ Person.family p
@@ -38,7 +39,7 @@ record Talk : Set where
     when      : When
     topic     : String           -- used in sentences: "… on <topic>"
     coauthors : List Person
-    credit    : Maybe String
+    credit    : Maybe Inlines
     slides    : Maybe Asset
 
 -- Defaults for the optional fields; content overrides the rest.

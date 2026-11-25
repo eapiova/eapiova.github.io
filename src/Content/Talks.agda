@@ -25,7 +25,7 @@ trendsInLogic = record talk
   ; city   = just "Sendai"
   ; when   = on (26 nov 2026)
   ; topic  = "strong inequality in observational type theory"
-  ; credit = just "Based on an idea by Iosif Petrakis."
+  ; credit = just (t "Based on an idea by " · who petrakis · t ".")
   }
 
 tpp = record talk
@@ -49,7 +49,7 @@ proofAndComputation = record talk
   ; city   = just "Fischbachau"
   ; when   = on (18 sep 2026)
   ; topic  = "strong inequality in observational type theory"
-  ; credit = just "Based on an idea by Iosif Petrakis."
+  ; credit = just (t "Based on an idea by " · who petrakis · t ".")
   ; slides = just pc26
   }
 
