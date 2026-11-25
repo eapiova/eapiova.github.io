@@ -44,7 +44,7 @@ intro : List Block
 intro =
     para (t "I am a PhD student at the Department of Computer Science of the University of Verona, where I started in October 2024. I am a member of the "
           · a logicGroup "Logic group"
-          · t " led by Peter M. Schuster, supervised by Margherita Zorzi and Isabella Mastroeni.")
+          · t " led by Peter M. Schuster and Andrea Masini, supervised by Margherita Zorzi and Isabella Mastroeni.")
   ∷ para (t "I work on formalised proof theory for modal logic, constructive and computable real analysis, nuclei for substructural logics and categorical logic. A fuller introduction is on the "
           · a (page research) "research page" · t ".")
   ∷ []
