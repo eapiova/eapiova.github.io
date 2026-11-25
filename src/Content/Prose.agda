@@ -87,11 +87,19 @@ reports =
 teachingBody : List Block
 teachingBody =
     h2 (t "University of Verona")
-  ∷ ul ( (b "Teaching Assistant" · t ", 2024-2025: Foundations of Mathematics.")
-       ∷ (b "Teaching Assistant" · t ", 2024-2025: Mathematical Logic.")
+  ∷ ul ( (b "Teaching Assistant" · t ", 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
+          · t ", taught by Peter M. Schuster.")
+       ∷ (b "Teaching Assistant" · t ", 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=389&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S72&codins=4S001096&discr=&discrCd=&lang=en") "Mathematical Logic"
+          · t ", taught by Peter M. Schuster.")
        ∷ [])
   ∷ h2 (t "Earlier teaching")
-  ∷ ul ( (b "Teaching Assistant" · t ", University of Padua, September 2021 - May 2023: Logic and Computability.")
+  ∷ ul ( (b "Tutor" · t ", University of Padua, September 2021 - May 2023: Logic, taught by Maria Emilia Maietti ("
+          · a (ext "https://www.math.unipd.it/~maietti/lez22.html") "2021/22" · t ", "
+          · a (ext "https://www.math.unipd.it/~maietti/lez23.html") "2022/23"
+          · t "), and Computability, taught by Paolo Baldan ("
+          · a (ext "https://web.archive.org/web/20220523022657/http://www.math.unipd.it/~baldan/Computability/") "2021/22" · t ", "
+          · a (ext "https://web.archive.org/web/20230206040340/http://www.math.unipd.it/~baldan/Computability/") "2022/23"
+          · t ").")
        ∷ (b "Mathematics and Physics teacher" · t ", Liceo (Veneto), 2019-2020.")
        ∷ [])
   ∷ []
@@ -111,8 +119,8 @@ cvBody =
        ∷ (t "See the complete " · a (page talks) "talks" · t " list.")
        ∷ [])
   ∷ h2 (t "Teaching")
-  ∷ ul ( t "Teaching Assistant, University of Verona, 2024-2025: Foundations of Mathematics; Mathematical Logic."
-       ∷ t "Teaching Assistant, University of Padua, September 2021 - May 2023: Logic and Computability."
+  ∷ ul ( t "Teaching Assistant, University of Verona, 2024-2025: Foundations of Mathematics I; Mathematical Logic."
+       ∷ t "Tutor, University of Padua, September 2021 - May 2023: Logic; Computability."
        ∷ t "Mathematics and Physics teacher, Liceo (Veneto), 2019-2020."
        ∷ [])
   ∷ h2 (t "Service")
