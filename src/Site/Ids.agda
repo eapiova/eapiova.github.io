@@ -102,17 +102,19 @@ pubKey jlc      = "borsetto-zorzi-s4dot2-jlc"
 -- Static files (checked to exist under static/ when the site is built)
 
 data Asset : Set where
-  cvPdf sstt26 pacman26 dagstuhl26 overlay25 ictcs25 : Asset
+  cvPdf tpp26 pc26 sstt26 pacman26 dagstuhl26 overlay25 ictcs25 : Asset
   serifRegular serifItalic serifSemibold mono : Asset   -- referenced by the stylesheets
   plainStyle agdaStyle : Asset
 
 allAssets : List Asset
-allAssets = cvPdf ∷ sstt26 ∷ pacman26 ∷ dagstuhl26 ∷ overlay25 ∷ ictcs25
+allAssets = cvPdf ∷ tpp26 ∷ pc26 ∷ sstt26 ∷ pacman26 ∷ dagstuhl26 ∷ overlay25 ∷ ictcs25
           ∷ serifRegular ∷ serifItalic ∷ serifSemibold ∷ mono
           ∷ plainStyle ∷ agdaStyle ∷ []
 
 assetPath : Asset → String
 assetPath cvPdf      = "files/cv.pdf"
+assetPath tpp26      = "files/slides/tpp-2026.pdf"
+assetPath pc26       = "files/slides/pc-2026.pdf"
 assetPath sstt26     = "files/slides/sstt-2026.pdf"
 assetPath pacman26   = "files/slides/pacman-2026.pdf"
 assetPath dagstuhl26 = "files/slides/dagstuhl-26121.pdf"

@@ -37,6 +37,7 @@ tpp = record talk
   ; city   = just "Tokyo"
   ; when   = on (17 nov 2026)
   ; topic  = "making injectivity compute in Cubical Agda"
+  ; slides = just tpp26
   }
 
 proofAndComputation = record talk
@@ -49,6 +50,7 @@ proofAndComputation = record talk
   ; when   = on (18 sep 2026)
   ; topic  = "strong inequality in observational type theory"
   ; credit = just "Based on an idea by Iosif Petrakis."
+  ; slides = just pc26
   }
 
 pacman = record talk

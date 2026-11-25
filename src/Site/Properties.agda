@@ -139,17 +139,19 @@ talks-newest-first = from-yes (linked? _≥?_ (map (ordinal ∘ start ∘ Talk.w
 
 assets-complete : ∀ x → x ∈ allAssets
 assets-complete cvPdf         = here refl
-assets-complete sstt26        = there (here refl)
-assets-complete pacman26      = there (there (here refl))
-assets-complete dagstuhl26    = there (there (there (here refl)))
-assets-complete overlay25     = there (there (there (there (here refl))))
-assets-complete ictcs25       = there (there (there (there (there (here refl)))))
-assets-complete serifRegular  = there (there (there (there (there (there (here refl))))))
-assets-complete serifItalic   = there (there (there (there (there (there (there (here refl)))))))
-assets-complete serifSemibold = there (there (there (there (there (there (there (there (here refl))))))))
-assets-complete mono          = there (there (there (there (there (there (there (there (there (here refl)))))))))
-assets-complete plainStyle    = there (there (there (there (there (there (there (there (there (there (here refl))))))))))
-assets-complete agdaStyle     = there (there (there (there (there (there (there (there (there (there (there (here refl)))))))))))
+assets-complete tpp26         = there (here refl)
+assets-complete pc26          = there (there (here refl))
+assets-complete sstt26        = there (there (there (here refl)))
+assets-complete pacman26      = there (there (there (there (here refl))))
+assets-complete dagstuhl26    = there (there (there (there (there (here refl)))))
+assets-complete overlay25     = there (there (there (there (there (there (here refl))))))
+assets-complete ictcs25       = there (there (there (there (there (there (there (here refl)))))))
+assets-complete serifRegular  = there (there (there (there (there (there (there (there (here refl))))))))
+assets-complete serifItalic   = there (there (there (there (there (there (there (there (there (here refl)))))))))
+assets-complete serifSemibold = there (there (there (there (there (there (there (there (there (there (here refl))))))))))
+assets-complete mono          = there (there (there (there (there (there (there (there (there (there (there (here refl)))))))))))
+assets-complete plainStyle    = there (there (there (there (there (there (there (there (there (there (there (there (here refl))))))))))))
+assets-complete agdaStyle     = there (there (there (there (there (there (there (there (there (there (there (there (there (here refl)))))))))))))
 
 ------------------------------------------------------------------------
 -- Escaped text cannot open a tag or end an attribute.
