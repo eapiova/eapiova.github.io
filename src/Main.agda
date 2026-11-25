@@ -24,7 +24,7 @@ open import System.FilePath.Posix using (mkFilePath)
 open import Site.Date
 open import Site.Ids
 open import Site.Pages using (document)
-open import Site.Bibliography using (bibFile; bibFileOf)
+open import Site.Bibliography using (bibFile; bibFileOf; biblatexFile; biblatexFileOf)
 import Site.Properties   -- the build does not proceed unless these proofs check
 
 toMonth : ℕ → Maybe Month
@@ -64,6 +64,8 @@ build today = do
   List.mapM′ (λ (d , p) → writeFile ("public/" ++ outPath d p) (document d today p)) outputs
   writeFile "public/bib/publications.bib" bibFile
   List.mapM′ (λ i → writeFile ("public/bib/" ++ pubKey i ++ ".bib") (bibFileOf i)) allPubIds
+  writeFile "public/bib/publications.biblatex.bib" biblatexFile
+  List.mapM′ (λ i → writeFile ("public/bib/" ++ pubKey i ++ ".biblatex.bib") (biblatexFileOf i)) allPubIds
   putStrLn ("Built " ++ show (length outputs) ++ " pages for " ++ showDate today ++ ".")
 
 main : Main

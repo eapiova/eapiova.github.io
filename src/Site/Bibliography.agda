@@ -7,6 +7,7 @@ module Site.Bibliography where
 
 open import Data.Bool.Base using (Bool; true; false; if_then_else_)
 open import Data.Char.Base using (fromℕ; toℕ)
+import Data.Char.Properties as Ch using (_==_)
 open import Data.List.Base as L using (List; []; _∷_; map; take; length; intersperse; concat)
 open import Data.Maybe.Base using (Maybe; just; nothing; maybe)
 open import Data.Nat.Base using (ℕ; suc; _+_; _∸_; _%_; _≤ᵇ_)
@@ -17,6 +18,7 @@ open import Function.Base using (_∘_)
 
 open import Html
 open import Site.Ids
+open import Site.Date using (When; on; from_to_; iso)
 open import Site.Types
 open import Site.Util using (_==_; _≤ˢ_; sortBy; filterᵇ; andList)
 open import Content.Publications using (pub)
@@ -99,7 +101,7 @@ citation p =
 
 pubLinks : PubId → List Inlines
 pubLinks i = doiLink L.++ paperLink L.++ map (λ (l , u) → a (ext u) l) (artifacts p)
-             L.++ a (bibOf i) "BibTeX" ∷ []
+             L.++ a (bibOf i) "BibTeX" ∷ a (biblatexOf i) "biblatex" ∷ []
   where
   p = pub i
   doiLink   = maybe (λ d → a (ext ("https://doi.org/" ++ d)) ("doi:" ++ d) ∷ []) [] (doi p)
@@ -126,45 +128,116 @@ appeared i = t "The paper " · b ("‘" ++ title p ++ "’") · t " appeared in 
 ------------------------------------------------------------------------
 -- BibTeX
 
-bibEntry : PubId → String
-bibEntry i =
-  "@" ++ kindName (kind p) ++ "{" ++ pubKey i ++ ",\n"
-  ++ S.intersperse ",\n" (fields p) ++ "\n}"
-  where
-  p = pub i
-  kindName : Kind → String
-  kindName inproceedings = "inproceedings"
-  kindName article       = "article"
+-- Two formats, from the same records: classic BibTeX, which every
+-- template accepts, and biblatex, which can say more (the event, its
+-- place and dates, the publication state).
 
+private
   field′ : String → String → String
   field′ k v = "  " ++ padRight k ++ " = {" ++ v ++ "}"
     where padRight : String → String
-          padRight s = s ++ fromList (L.replicate (9 ∸ S.length s) ' ')
+          padRight s = s ++ fromList (L.replicate (10 ∸ S.length s) ' ')
 
   opt : String → Maybe String → List String
   opt k = maybe (λ v → field′ k v ∷ []) []
 
-  fields : Publication → List String
-  fields p =
-    field′ "author" (S.intersperse " and " (map inverted (authors p)))
-    ∷ field′ "title" ("{" ++ title p ++ "}")
-    ∷ field′ (venueField (kind p)) ("{" ++ venue p ++ "}")
-    ∷ opt "address" (address p)
-    L.++ opt "publisher" (publisher p)
-    L.++ opt "series" (series p)
-    L.++ opt "volume" (volume p)
-    L.++ opt "pages" (maybe (just ∘ range "--") nothing (pages p))
-    L.++ field′ "year" (show (year p))
-    ∷ opt "doi" (doi p)
-    L.++ opt "url" (url p)
-    L.++ field′ "pubstate" (statusText p) ∷ []
-    where
-    venueField : Kind → String
-    venueField inproceedings = "booktitle"
-    venueField article       = "journal"
+  names : List Person → String
+  names ps = S.intersperse " and " (map inverted ps)
 
-bibFile : String
-bibFile = S.intersperse "\n\n" (map bibEntry byLabel) ++ "\n"
+  entry′ : String → PubId → List String → String
+  entry′ type i fs = "@" ++ type ++ "{" ++ pubKey i ++ ",\n" ++ S.intersperse ",\n" fs ++ "\n}"
 
-bibFileOf : PubId → String
-bibFileOf i = bibEntry i ++ "\n"
+  -- TeX turns ' into a typographic apostrophe; a literal ’ needs font support.
+  tex : String → String
+  tex s = fromList (L.map (λ c → if c Ch.== '’' then '\'' else c) (S.toList s))
+
+  isoWhen : When → String
+  isoWhen (on d)        = iso d
+  isoWhen (from d to e) = iso d ++ "/" ++ iso e
+
+  pagesOf : Publication → List String
+  pagesOf p = opt "pages" (maybe (just ∘ range "--") nothing (pages p))
+
+  links′ : Publication → List String
+  links′ p = opt "doi" (doi p) L.++ opt "url" (url p)
+
+bibtexEntry : PubId → String
+bibtexEntry i with kind p | proceedings p
+  where p = pub i
+... | article | _ = entry′ "article" i
+    ( field′ "author" (names (authors p))
+    ∷ field′ "title" ("{" ++ tex (title p) ++ "}")
+    ∷ field′ "journal" (venue p)
+    ∷ field′ "year" (show (year p))
+    ∷ submittedNote (status p) L.++ links′ p )
+  where
+  p = pub i
+  submittedNote : Status → List String
+  submittedNote published     = []
+  submittedNote (submitted _) = field′ "note" "Submitted" ∷ []
+... | inproceedings | nothing = entry′ "inproceedings" i
+    ( field′ "author" (names (authors p)) ∷ field′ "title" ("{" ++ tex (title p) ++ "}")
+    ∷ field′ "booktitle" (venue p) ∷ pagesOf p L.++ field′ "year" (show (year p)) ∷ links′ p )
+  where p = pub i
+... | inproceedings | just c = entry′ "inproceedings" i
+    ( field′ "author" (names (authors p))
+    ∷ field′ "title" ("{" ++ tex (title p) ++ "}")
+    ∷ field′ "booktitle" ("{" ++ Proceedings.booktitle c ++ "}")
+    ∷ editors (Proceedings.editors c)
+    L.++ opt "series" (Proceedings.series c)
+    L.++ opt "volume" (Proceedings.number c)
+    L.++ pagesOf p
+    L.++ field′ "publisher" (Proceedings.publisher c)
+    ∷ field′ "year" (show (year p))
+    ∷ links′ p )
+  where
+  p = pub i
+  editors : List Person → List String
+  editors [] = []
+  editors es = field′ "editor" (names es) ∷ []
+
+biblatexEntry : PubId → String
+biblatexEntry i with kind p | proceedings p
+  where p = pub i
+... | article | _ = entry′ "article" i
+    ( field′ "author" (names (authors p))
+    ∷ field′ "title" (tex (title p))
+    ∷ field′ "journaltitle" (venue p)
+    ∷ field′ "date" (show (year p))
+    ∷ state (status p) L.++ links′ p )
+  where
+  p = pub i
+  state : Status → List String
+  state published     = []
+  state (submitted _) = field′ "pubstate" "submitted" ∷ []
+... | inproceedings | nothing = entry′ "inproceedings" i
+    ( field′ "author" (names (authors p)) ∷ field′ "title" (tex (title p))
+    ∷ field′ "booktitle" (venue p) ∷ pagesOf p L.++ field′ "date" (show (year p)) ∷ links′ p )
+  where p = pub i
+... | inproceedings | just c = entry′ "inproceedings" i
+    ( field′ "author" (names (authors p))
+    ∷ field′ "title" (tex (title p))
+    ∷ field′ "booktitle" (Proceedings.booktitle c)
+    ∷ editors (Proceedings.editors c)
+    L.++ opt "eventtitle" (Proceedings.eventtitle c)
+    L.++ field′ "venue" (Proceedings.place c)
+    ∷ field′ "eventdate" (isoWhen (Proceedings.eventdate c))
+    ∷ opt "series" (Proceedings.series c)
+    L.++ opt "volume" (Proceedings.number c)
+    L.++ pagesOf p
+    L.++ field′ "publisher" (Proceedings.publisher c)
+    ∷ field′ "date" (show (year p))
+    ∷ links′ p )
+  where
+  p = pub i
+  editors : List Person → List String
+  editors [] = []
+  editors es = field′ "editor" (names es) ∷ []
+
+bibFile biblatexFile : String
+bibFile      = S.intersperse "\n\n" (map bibtexEntry byLabel) ++ "\n"
+biblatexFile = S.intersperse "\n\n" (map biblatexEntry byLabel) ++ "\n"
+
+bibFileOf biblatexFileOf : PubId → String
+bibFileOf i      = bibtexEntry i ++ "\n"
+biblatexFileOf i = biblatexEntry i ++ "\n"

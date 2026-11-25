@@ -121,8 +121,9 @@ homeBody today =
 
 publicationsBody : List Block
 publicationsBody =
-    para (t "Each entry links to its formal artefacts and its BibTeX; the "
-          · a bibtex "complete BibTeX file" · t " has them all.")
+    para (t "Each entry links to its formal artefacts and to its entry in two formats: "
+          · t "classic BibTeX, which every template accepts, and biblatex, which also records the event. "
+          · t "Complete files: " · a bibtex "BibTeX" · t ", " · a biblatex "biblatex" · t ".")
   ∷ section "Published" isPublished L.++ section "Under review" isSubmitted L.++ reports
   where
   section : String → (PubId → Bool) → List Block

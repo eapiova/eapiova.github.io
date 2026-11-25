@@ -27,6 +27,18 @@ altenkirch       = person "Thorsten" "Altenkirch" (just "https://people.cs.nott.
 petrakis         = person "Iosif" "Petrakis" (just "https://www.di.univr.it/?ent=persona&id=42498&lang=en")
 lumsdaine        = person "Peter" "LeFanu Lumsdaine" (just "http://peterlefanulumsdaine.com/")
 
+-- Editors of proceedings.
+brattka fernau galeotti moscardelli scozzari montanari orlandini saccomanno tonetta : Person
+brattka     = person "Vasco" "Brattka" nothing
+fernau      = person "Henning" "Fernau" nothing
+galeotti    = person "Lorenzo" "Galeotti" nothing
+moscardelli = person "Luca" "Moscardelli" nothing
+scozzari    = person "Francesca" "Scozzari" nothing
+montanari   = person "Angelo" "Montanari" nothing
+orlandini   = person "Andrea" "Orlandini" nothing
+saccomanno  = person "Nicola" "Saccomanno" nothing
+tonetta     = person "Stefano" "Tonetta" nothing
+
 -- A name, linked to the person's homepage when there is one.
 who : Person → Inlines
 who p = maybe (λ u → a (ext u) (fullName p)) (t (fullName p)) (Person.homepage p)

@@ -113,6 +113,8 @@ module _ (root : String) where
   href (asset x) = root + assetPath x
   href bibtex    = root + "bib/publications.bib"
   href (bibOf i) = root + "bib/" + pubKey i + ".bib"
+  href biblatex  = root + "bib/publications.biblatex.bib"
+  href (biblatexOf i) = root + "bib/" + pubKey i + ".biblatex.bib"
   href (ext u)   = u
   href (mail m)  = "mailto:" + m
 

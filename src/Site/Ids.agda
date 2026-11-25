@@ -181,5 +181,7 @@ data Target : Set where
   asset  : Asset → Target    -- a static file
   bibtex : Target            -- the generated BibTeX file
   bibOf  : PubId → Target    -- the BibTeX of one publication
+  biblatex   : Target          -- the generated biblatex file
+  biblatexOf : PubId → Target  -- the biblatex of one publication
   ext    : String → Target   -- an external URL
   mail   : String → Target   -- an e-mail address

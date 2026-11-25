@@ -55,6 +55,19 @@ talk = record
 data Kind : Set where
   inproceedings article : Kind
 
+-- The volume a paper appeared in and the event it belongs to, as the
+-- bibliography files need them (official names, not display text).
+record Proceedings : Set where
+  field
+    booktitle  : String
+    editors    : List Person
+    publisher  : String
+    series     : Maybe String
+    number     : Maybe String       -- volume within the series
+    eventtitle : Maybe String       -- when the book title does not already name it
+    place      : String
+    eventdate  : When
+
 data Status : Set where
   published : Status
   submitted : String → Status    -- submitted to the named venue
@@ -76,13 +89,14 @@ record Publication : Set where
     doi       : Maybe String
     status    : Status
     artifacts : List (String × String)   -- label, URL
+    proceedings : Maybe Proceedings
 
 publication : Publication
 publication = record
   { kind = inproceedings; authors = []; title = ""; venue = ""; venueSite = nothing
   ; address = nothing; publisher = nothing; series = nothing; volume = nothing
   ; pages = nothing; year = 1970; url = nothing; doi = nothing
-  ; status = published; artifacts = [] }
+  ; status = published; artifacts = []; proceedings = nothing }
 
 ------------------------------------------------------------------------
 -- Software

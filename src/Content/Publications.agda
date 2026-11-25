@@ -6,13 +6,14 @@
 module Content.Publications where
 
 open import Data.List.Base using (List; []; _∷_)
-open import Data.Maybe.Base using (just)
+open import Data.Maybe.Base using (just; nothing)
 open import Data.Product.Base using (_,_)
 open import Data.String.Base using (String)
 
 open import Site.Ids using (PubId; glivenko; namor; ictcs; jlc)
 open import Site.Types
 open import Content.People
+open import Site.Date
 
 s4dot2Repo : String
 s4dot2Repo = "https://github.com/eapiova/s4dot2-cut-elimination"
@@ -30,6 +31,15 @@ pub glivenko = record publication
   ; pages     = just (162 , 177)
   ; year      = 2026
   ; doi       = just "10.1007/978-3-032-31348-5_11"
+  ; proceedings = just record
+      { booktitle  = "Timeless Machines: Computability Across Eras"
+      ; editors    = brattka ∷ fernau ∷ galeotti ∷ []
+      ; publisher  = "Springer"
+      ; series     = just "Lecture Notes in Computer Science"
+      ; number     = just "16674"
+      ; eventtitle = just "22nd Conference on Computability in Europe (CiE 2026)"
+      ; place      = "Trier, Germany"
+      ; eventdate  = from 27 jul 2026 to 31 jul 2026 }
   ; artifacts = ("formalisation" , "https://github.com/eapiova/nuclear")
               ∷ ("rendered Agda HTML" , "https://eapiova.github.io/nuclear/")
               ∷ []
@@ -43,6 +53,15 @@ pub namor = record publication
   ; pages     = just (33 , 40)
   ; year      = 2025
   ; url       = just "https://ceur-ws.org/Vol-4142/paper4.pdf"
+  ; proceedings = just record
+      { booktitle  = "Proceedings of the 7th International Workshop on Artificial Intelligence and Formal Verification, Logic, Automata, and Synthesis (OVERLAY 2025)"
+      ; editors    = montanari ∷ orlandini ∷ saccomanno ∷ tonetta ∷ []
+      ; publisher  = "CEUR-WS.org"
+      ; series     = just "CEUR Workshop Proceedings"
+      ; number     = just "4142"
+      ; eventtitle = nothing
+      ; place      = "Bologna, Italy"
+      ; eventdate  = on (26 oct 2025) }
   }
 pub ictcs = record publication
   { authors   = borsetto ∷ zorzi ∷ []
@@ -53,6 +72,15 @@ pub ictcs = record publication
   ; pages     = just (163 , 168)
   ; year      = 2025
   ; url       = just "https://ceur-ws.org/Vol-4039/#paper17"
+  ; proceedings = just record
+      { booktitle  = "Proceedings of the 26th Italian Conference on Theoretical Computer Science (ICTCS 2025)"
+      ; editors    = moscardelli ∷ scozzari ∷ []
+      ; publisher  = "CEUR-WS.org"
+      ; series     = just "CEUR Workshop Proceedings"
+      ; number     = just "4039"
+      ; eventtitle = nothing
+      ; place      = "Pescara, Italy"
+      ; eventdate  = from 10 sep 2025 to 12 sep 2025 }
   ; artifacts = ("formalisation" , s4dot2Repo) ∷ []
   }
 pub jlc = record publication
