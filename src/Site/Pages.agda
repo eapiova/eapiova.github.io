@@ -46,7 +46,7 @@ module _ (today : Date) (x : Talk) where
     joint [] = []
     joint ps = t (" Joint work with " ++ andList (map fullName ps) ++ ".")
     line =
-      event · maybe (t ", " ·_) [] detail · t (", " ++ place) · maybe (t ", " ·_) [] remark · t "."
+      t event · maybe (t ", " ·_) [] detail · t (", " ++ place) · maybe (t ", " ·_) [] remark · t "."
       · (if upcoming then t " " · it "Upcoming." else [])
       · joint coauthors
       · maybe (λ s → t (" " ++ s)) [] credit
@@ -57,10 +57,12 @@ module _ (today : Date) (x : Talk) where
   talkNews = news (start when) sentence
     where
     inCity = maybe (λ c → t (" in " ++ c)) [] city
+    -- The event's name, linked to its page when there is one.
+    eventRef = maybe (λ u → a (ext u) event) (t event) site
     sentence =
       if upcoming
-      then t "Speaking at " · event · inCity · t (" on " ++ topic ++ ".")
-      else t "Spoke at " · event · inCity · t (" on " ++ topic ++ ".")
+      then t "Speaking at " · eventRef · inCity · t (" on " ++ topic ++ ".")
+      else t "Spoke at " · eventRef · inCity · t (" on " ++ topic ++ ".")
 
 -- Consecutive talks grouped by year.
 byYear : List Talk → List (ℕ × List Talk)

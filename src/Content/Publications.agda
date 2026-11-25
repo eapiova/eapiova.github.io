@@ -22,6 +22,7 @@ pub glivenko = record publication
   { authors   = borsetto ∷ fellin ∷ uustalu ∷ wan ∷ []
   ; title     = "Glivenko’s theorem underneath structure"
   ; venue     = "CiE 2026 (Computability in Europe)"
+  ; venueSite = just "https://www.uni-trier.de/en/universitaet/fachbereiche-faecher/fachbereich-iv/faecher/informatikwissenschaften/professuren/theoretische-informatik/research/conferences-and-workshops/translate-to-englisch-cie-2026"
   ; address   = just "Trier"
   ; publisher = just "Springer LNCS"
   ; series    = just "Lecture Notes in Computer Science"

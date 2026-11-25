@@ -19,7 +19,8 @@ trendsInLogic tpp proofAndComputation pacman sstt dagstuhl overlay ictcsTalk : T
 
 trendsInLogic = record talk
   { title  = "Strong inequality in observational type theory"
-  ; event  = t "Trends in Logic XXVI"
+  ; event  = "Trends in Logic XXVI"
+  ; site   = just "https://sites.google.com/view/trendsinlogicxxvi/home"
   ; place  = "Tohoku University, Sendai, Japan"
   ; city   = just "Sendai"
   ; when   = on (26 nov 2026)
@@ -29,7 +30,8 @@ trendsInLogic = record talk
 
 tpp = record talk
   { title  = "Making injectivity compute in Cubical Agda"
-  ; event  = t "TPP 2026"
+  ; event  = "TPP 2026"
+  ; site   = just "https://auto-res.github.io/tpp2026/en/"
   ; detail = just (t "the 22nd Theorem Proving and Provers Meeting")
   ; place  = "RIKEN AIP, Tokyo, Japan"
   ; city   = just "Tokyo"
@@ -39,7 +41,8 @@ tpp = record talk
 
 proofAndComputation = record talk
   { title  = "Strong Inequality in Observational Type Theory"
-  ; event  = t "Proof and Computation 2026"
+  ; event  = "Proof and Computation 2026"
+  ; site   = just "https://www.mathematik.uni-muenchen.de/~schwicht/pc26.html"
   ; detail = just (t "an international autumn school")
   ; place  = "Fischbachau, Germany"
   ; city   = just "Fischbachau"
@@ -50,7 +53,8 @@ proofAndComputation = record talk
 
 pacman = record talk
   { title     = "Kraus’s Magic Trick for Computing with Constructive Reals"
-  ; event     = t "PACM∧N 2026"
+  ; event     = "PACM∧N 2026"
+  ; site      = just "https://pacman.logicverona.it/2026.html"
   ; place     = "Verona, Italy"
   ; city      = just "Verona"
   ; when      = from 10 jun 2026 to 12 jun 2026
@@ -61,7 +65,8 @@ pacman = record talk
 
 sstt = record talk
   { title  = "A canonical normal form theorem for the type theory of regular categories"
-  ; event  = t "SSTT 2026"
+  ; event  = "SSTT 2026"
+  ; site   = just "https://ul-fmf.github.io/mfps-sstt-2026/sstt"
   ; place  = "Ljubljana, Slovenia"
   ; city   = just "Ljubljana"
   ; remark = just (t "co-located with MFPS 2026")
@@ -72,7 +77,8 @@ sstt = record talk
 
 dagstuhl = record talk
   { title  = "Where does ACω hide in constructive reals?"
-  ; event  = t "Dagstuhl Seminar 26121"
+  ; event  = "Dagstuhl Seminar 26121"
+  ; site   = just "https://www.dagstuhl.de/26121"
   ; detail = just (t "“Proof Systems in Actual Practice: Reasoning and Computation”")
   ; place  = "Schloss Dagstuhl, Germany"
   ; when   = on (16 mar 2026)
@@ -82,7 +88,8 @@ dagstuhl = record talk
 
 overlay = record talk
   { title     = "NAMOR: a New Agda Library for Modal Extended Sequents"
-  ; event     = t "OVERLAY 2025"
+  ; event     = "OVERLAY 2025"
+  ; site      = just "https://overlay.uniud.it/workshop/2025"
   ; place     = "Bologna, Italy"
   ; city      = just "Bologna"
   ; when      = on (26 oct 2025)
@@ -93,7 +100,8 @@ overlay = record talk
 
 ictcsTalk = record talk
   { title     = "An Agda Implementation of the Modal Logic S4.2: First Investigations"
-  ; event     = t "ICTCS 2025"
+  ; event     = "ICTCS 2025"
+  ; site      = just "https://ictcs2025.unich.it/"
   ; place     = "Pescara, Italy"
   ; city      = just "Pescara"
   ; when      = on (12 sep 2025)

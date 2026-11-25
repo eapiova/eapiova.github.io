@@ -118,7 +118,7 @@ isSubmitted i with status (pub i)
 
 -- "The paper … appeared in …", for the home page.
 appeared : PubId → Inlines
-appeared i = t "The paper " · b ("“" ++ title p ++ "”") · t " appeared in " · it (venue p)
+appeared i = t "The paper " · b ("“" ++ title p ++ "”") · t " appeared in " · maybe (λ u → a′ (ext u) (it (venue p))) (it (venue p)) (venueSite p)
            · comma (maybe (λ s → just (s ++ maybe (" " ++_) "" (volume p))) nothing (publisher p))
            · maybe (λ r → t (", pages " ++ range "–" r)) [] (pages p) · t "."
   where p = pub i

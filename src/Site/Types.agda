@@ -29,7 +29,8 @@ fullName p = Person.given p ++ " " ++ Person.family p
 record Talk : Set where
   field
     title     : String
-    event     : Inlines          -- "SSTT 2026"
+    event     : String           -- "SSTT 2026"
+    site      : Maybe String     -- the event's web page
     detail    : Maybe Inlines    -- shown after the event on the talks page
     place     : String           -- "Ljubljana, Slovenia"
     city      : Maybe String     -- used in sentences: "… in Ljubljana"
@@ -43,7 +44,7 @@ record Talk : Set where
 -- Defaults for the optional fields; content overrides the rest.
 talk : Talk
 talk = record
-  { title = ""; event = []; detail = nothing; place = ""; city = nothing
+  { title = ""; event = ""; site = nothing; detail = nothing; place = ""; city = nothing
   ; remark = nothing; when = on (1 jan 1970); topic = ""; coauthors = []
   ; credit = nothing; slides = nothing }
 
@@ -63,6 +64,7 @@ record Publication : Set where
     authors   : List Person
     title     : String
     venue     : String           -- booktitle or journal
+    venueSite : Maybe String     -- the conference's web page
     address   : Maybe String
     publisher : Maybe String
     series    : Maybe String
@@ -76,7 +78,7 @@ record Publication : Set where
 
 publication : Publication
 publication = record
-  { kind = inproceedings; authors = []; title = ""; venue = ""
+  { kind = inproceedings; authors = []; title = ""; venue = ""; venueSite = nothing
   ; address = nothing; publisher = nothing; series = nothing; volume = nothing
   ; pages = nothing; year = 1970; url = nothing; doi = nothing
   ; status = published; artifacts = [] }
