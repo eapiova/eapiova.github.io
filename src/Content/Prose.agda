@@ -86,24 +86,24 @@ reports =
 
 teachingBody : List Block
 teachingBody =
-    h2 (t "University of Verona")
-  ∷ ul ( (b "Tutor" · t ", exercise classes and marking of submitted exercises, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1293&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S20R&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
-          · t ", taught by Peter M. Schuster.")
-       ∷ (b "Tutor" · t ", exercise classes, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
-          · t ", taught by Peter M. Schuster.")
-       ∷ (b "Tutor" · t ", exercise classes, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=389&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S72&codins=4S001096&discr=&discrCd=&lang=en") "Mathematical Logic"
-          · t ", taught by Peter M. Schuster.")
-       ∷ [])
-  ∷ h2 (t "Earlier teaching")
-  ∷ ul ( (b "Tutor" · t ", exercise classes, University of Padua, September 2021 - May 2023: Logic, taught by Maria Emilia Maietti ("
-          · a (ext "https://www.math.unipd.it/~maietti/lez22.html") "2021/22" · t ", "
-          · a (ext "https://www.math.unipd.it/~maietti/lez23.html") "2022/23"
-          · t "), and Computability, taught by Paolo Baldan ("
-          · a (ext "https://web.archive.org/web/20220523022657/http://www.math.unipd.it/~baldan/Computability/") "2021/22" · t ", "
-          · a (ext "https://web.archive.org/web/20230206040340/http://www.math.unipd.it/~baldan/Computability/") "2022/23"
-          · t "). For Logic, also exam invigilator, under a separate contract.")
-       ∷ (b "Mathematics and Physics teacher" · t ", Liceo (Veneto), 2019-2020.")
-       ∷ [])
+  ul ( (b "Tutor" · t ", University of Verona, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1293&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S20R&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
+        · t ", taught by Peter M. Schuster. Exercise classes and marking of submitted exercises.")
+     ∷ (b "Tutor" · t ", University of Verona, 2025-2026: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=1352&menu=studiare&tab=insegnamenti&aa=2025/2026&codiceCs=S72R&codins=4S001096&discr=&discrCd=&lang=en") "Mathematical Logic"
+        · t ", taught by Peter M. Schuster. Exercise classes.")
+     ∷ (b "Tutor" · t ", University of Verona, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=389&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S72&codins=4S001104&discr=&discrCd=&lang=en") "Advanced Course in Foundations of Mathematics"
+        · t ", taught by Peter M. Schuster and Margherita Zorzi. Exercise classes.")
+     ∷ (b "Tutor" · t ", University of Verona, 2024-2025: " · a (ext "https://www.corsi.univr.it/?ent=cs&id=418&menu=studiare&tab=insegnamenti&aa=2024/2025&codiceCs=S20&codins=4S02752&discr=&discrCd=&lang=en") "Foundations of Mathematics I"
+        · t ", taught by Peter M. Schuster. Exercise classes.")
+     ∷ (b "Tutor" · t ", University of Padua, 2021-2023: Logic, taught by Maria Emilia Maietti ("
+        · a (ext "https://www.math.unipd.it/~maietti/lez22.html") "2021/22" · t ", "
+        · a (ext "https://www.math.unipd.it/~maietti/lez23.html") "2022/23"
+        · t "). Exercise classes; also exam invigilation, under a separate contract.")
+     ∷ (b "Tutor" · t ", University of Padua, 2021-2023: Computability, taught by Paolo Baldan ("
+        · a (ext "https://web.archive.org/web/20220523022657/http://www.math.unipd.it/~baldan/Computability/") "2021/22" · t ", "
+        · a (ext "https://web.archive.org/web/20230206040340/http://www.math.unipd.it/~baldan/Computability/") "2022/23"
+        · t "). Exercise classes.")
+     ∷ (b "Mathematics and Physics teacher" · t ", Liceo (Veneto), 2019-2020.")
+     ∷ [])
   ∷ []
 
 cvBody : List Block
@@ -121,8 +121,8 @@ cvBody =
        ∷ (t "See the complete " · a (page talks) "talks" · t " list.")
        ∷ [])
   ∷ h2 (t "Teaching")
-  ∷ ul ( t "Tutor (exercise classes), University of Verona, 2024-2026: Foundations of Mathematics I (2024-2026, also marking submitted exercises in 2025-2026); Mathematical Logic (2024-2025)."
-       ∷ t "Tutor (exercise classes), University of Padua, September 2021 - May 2023: Logic; Computability."
+  ∷ ul ( t "Tutor (exercise classes), University of Verona: Foundations of Mathematics I (2024-2026; also marking in 2025-2026), Mathematical Logic (2025-2026), Advanced Course in Foundations of Mathematics (2024-2025)."
+       ∷ t "Tutor (exercise classes), University of Padua, 2021-2023: Logic; Computability."
        ∷ t "Exam invigilator, University of Padua, 2021-2023: Logic."
        ∷ t "Mathematics and Physics teacher, Liceo (Veneto), 2019-2020."
        ∷ [])
